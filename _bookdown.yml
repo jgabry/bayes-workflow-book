@@ -1,0 +1,22 @@
+new_session: yes
+before_chapter_script: "before-chapter.R"
+delete_merged_file: TRUE
+rmd_files: [
+  "index.Rmd",
+
+  "part1.Rmd",
+  "introduction.Rmd",
+  "fake-data.Rmd",
+  "prior-data-models.Rmd",
+  "simple-examples.Rmd",
+  "workflow.Rmd",
+  "modeling-as-software.Rmd",
+
+  "part2.Rmd",
+  "bayesian-data-analysis.Rmd",
+  "maximum-likelihood.Rmd",
+  "bayesian-estimation.Rmd",
+  "variational-inference.Rmd",
+
+  "references.Rmd"
+]
