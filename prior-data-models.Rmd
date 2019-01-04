@@ -96,7 +96,7 @@ information.
 
 For any fixed model, as the sample size increases, the likelihood
 becomes more informative.  This can be seen, for example, in the
-mdoels above, where each additional data point adds another term to
+models above, where each additional data point adds another term to
 the likelihood in the implicit vector addition of the `target +=` or
 `~` statement.  See Chapter 4 of _Bayesian Data Analysis_ for more on
 this.
