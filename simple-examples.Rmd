@@ -327,7 +327,7 @@ following steps:
 - Setting up a model in which different people rate different movies,
   with systematic differences between who rates which movies.
 
-- Espanding the model to allow for the possibility that more people
+- Expanding the model to allow for the possibility that more people
   see, and rate, movies that are more popular.
 
 For each step, we set up a model, simulate fake data from that model,
@@ -341,7 +341,7 @@ movies, with any randomly selected rating for movie $j$ being drawn
 from a normal distribution with mean $\theta_j$ and standard deviation
 $\sigma$.
 
-For simplicity, we're pretending radings are continuous unbounded
+For simplicity, we're pretending ratings are continuous unbounded
 numbers (rather than integers from 0 through 5) and that the
 distributions of ratings for the teo movies differ only in their mean,
 not their variance.  We're not allowing, for example, a polarizing
