@@ -343,7 +343,7 @@ $\sigma$.
 
 For simplicity, we're pretending ratings are continuous unbounded
 numbers (rather than integers from 0 through 5) and that the
-distributions of ratings for the teo movies differ only in their mean,
+distributions of ratings for the two movies differ only in their mean,
 not their variance.  We're not allowing, for example, a polarizing
 movie that you either love or hate.  The ratings distribution for any
 movie is assumed to be bell-shaped.  Again, we can later go back and
