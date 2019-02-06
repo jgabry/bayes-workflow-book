@@ -1,3 +1,4 @@
+
 # Introduction
 
 ## Bayesian Data Analysis
@@ -125,8 +126,21 @@ of a statistical model we use Greek letters and math notation.
 
 Here is the full model written in Stan:
 
-```{r}
-print_file("stan/simplest-regression.stan")
+
+```
+data {
+  int<lower=0> N;
+  vector[N] x;
+  vector[N] y;
+}
+parameters {
+  real a;
+  real b;
+  real<lower=0> sigma;
+}
+model {
+  y ~ normal(a + b * x, sigma);
+}
 ```
 
 The program has three named blocks: the data block which
@@ -145,7 +159,8 @@ for the vector length `N` and a vector of values for both
 `a`, `b`, and `sigma`.
 We can do this using Stan or directly in R:
 
-```{r echo=TRUE}
+
+```r
 N <- 100
 a <- 10
 b <- 4
@@ -161,19 +176,32 @@ This object is passed into the Stan algorithm which
 fits the the model with the simulated data.
 In this example we use Stan's default sampling algorithm:
 
-```{r ex-fit-cmd, echo=TRUE, eval=FALSE}
+
+```r
 fit <- stan("stan/simplest-regression.stan", data=hello_data)
 ```
-```{r ex-fit-cmd-do, include=FALSE}
-fit <- stan("stan/simplest-regression.stan", data=hello_data, refresh=0)
-```
+
 
 To evaluate the fit,
 we can print the estimates of the model parameters
 `a`, `b`, and `sigma`:
 
-```{r ex-fit-print, echo=TRUE}
+
+```r
 print(fit, pars=c("a","b","sigma"), probs=c(0.025,0.975))
+Inference for Stan model: simplest-regression.
+4 chains, each with iter=2000; warmup=1000; thin=1; 
+post-warmup draws per chain=1000, total post-warmup draws=4000.
+
+      mean se_mean   sd 2.5%  98% n_eff Rhat
+a     11.4    0.02 0.97  9.4 13.2  1955    1
+b      3.8    0.00 0.16  3.5  4.1  1921    1
+sigma  4.9    0.01 0.36  4.3  5.7  2275    1
+
+Samples were drawn using NUTS(diag_e) at Wed Feb  6 21:44:39 2019.
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).
 ```
 
 To simulate the data `y` we picked `10`, `4` and `5` as
@@ -423,7 +451,8 @@ the output of Stan is a list of posterior simulations.
 
 We have already seen an example of this above:
 
-```{r ex-fit-cmd-again, echo=TRUE, eval=FALSE}
+
+```r
 fit <- stan("stan/simplest-regression.stan", data=hello_data)
 ```
 
@@ -432,11 +461,20 @@ posterior simulations and also some other information regarding the
 settings of the fitting algorithm.  Here, for example, we access some
 simulations:
 
-```{r echo=TRUE}
+
+```r
 sims_as_matrix <- as.matrix(fit)
 print(sims_as_matrix[1:5,])
+          parameters
+iterations  a   b sigma lp__
+      [1,] 12 3.7   5.1 -207
+      [2,] 12 3.8   4.8 -206
+      [3,] 12 3.9   4.8 -207
+      [4,] 11 3.8   4.6 -206
+      [5,] 12 3.8   4.8 -206
 sims_as_list <- extract(fit)
 print(sims_as_list$a[1:5])
+[1] 11 12 13 12 12
 ```
 
 Each row of the above matrix is a different posterior simulation: we
@@ -451,21 +489,28 @@ objective function, and Stan returns the value of the parameters at
 this estimated mode along with the computed value of the objective
 function.  Here is an example:
 
-```{r ex-opt-cmd, echo=TRUE, eval=FALSE}
+
+```r
 simplest <- stan_model("stan/simplest-regression.stan")
 fit_2 <- optimizing(simplest, data=hello_data)
 ```
-```{r ex-opt-do, include=FALSE}
-simplest <- stan_model("stan/simplest-regression.stan")
-fit_2 <- optimizing(simplest, data=hello_data)
-```
+
 
 In this case we broke the computation into two steps, first compiling
 and saving the compiled model into the R object "simplest" and then
 performing the optimizer on this program.  And here is the result:
 
-```{r ex-opt-fit}
-print(fit_2)
+
+```
+$par
+    a     b sigma 
+ 11.4   3.8   4.8 
+
+$value
+[1] -207
+
+$return_code
+[1] 0
 ```
 
 For this simple model, the values of the parameters at the optimum are
@@ -623,42 +668,79 @@ into _blocks_:
 
 Here is an example of a Stan model with a vector parameter:
 
-```{r}
-print_file("stan/vector-regression.stan")
+
+```
+data {
+  int<lower=0> N;
+  int<lower=0> K;
+  matrix[N,K] X;
+  vector[N] y;
+}
+parameters {
+  vector[K] b;
+  real<lower=0> sigma;
+}
+model {
+  y ~ normal(X*b, sigma);
+}
 ```
 
 To fit this model, we simply reconfigure the data by constructing the
 matrix of predictors and then run from R:
 
-```{r ex-vector-cmd,  echo=TRUE, eval=FALSE}
+
+```r
 ones <- rep(1, N)
 X <- cbind(ones, x)
 K <- 2
 data_3 <- list(N=N, K=K, X=X, y=y)
 fit_3 <- stan("stan/vector-regression.stan", data=data_3)
 ```
-```{r ex-vector-do,  include=FALSE}
-ones <- rep(1, N)
-X <- cbind(ones, x)
-K <- 2
-data_3 <- list(N=N, K=K, X=X, y=y)
-fit_3 <- stan("stan/vector-regression.stan", data=data_3)
-```
+
 
 Here is the result:
 
-```{r}
-print(fit_3)
+
+```
+Inference for Stan model: vector-regression.
+4 chains, each with iter=2000; warmup=1000; thin=1; 
+post-warmup draws per chain=1000, total post-warmup draws=4000.
+
+        mean se_mean   sd   2.5%    25%    50%    75%    98% n_eff Rhat
+b[1]    11.4    0.02 0.99    9.4   10.7   11.3   12.0   13.3  1635    1
+b[2]     3.8    0.00 0.16    3.5    3.7    3.8    3.9    4.1  1660    1
+sigma    4.9    0.01 0.35    4.3    4.7    4.9    5.2    5.7  2507    1
+lp__  -207.0    0.04 1.23 -210.2 -207.6 -206.7 -206.1 -205.6  1237    1
+
+Samples were drawn using NUTS(diag_e) at Wed Feb  6 21:45:30 2019.
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).
 ```
 
 And here is what happens if we grab the matrix or list of posterior
 simulations:
 
-```{r echo=TRUE}
+
+```r
 sims_as_matrix <- as.matrix(fit_3)
 print(sims_as_matrix[1:5,])
+          parameters
+iterations b[1] b[2] sigma lp__
+      [1,]   12  3.7   4.5 -206
+      [2,]   11  3.8   4.8 -206
+      [3,]   11  3.9   5.1 -206
+      [4,]   10  3.9   5.2 -207
+      [5,]   12  3.8   5.2 -206
 sims_as_list <- extract(fit_3)
 print(sims_as_list$b[1:5,])
+          
+iterations [,1] [,2]
+      [1,]   12  3.6
+      [2,]   11  3.8
+      [3,]   12  3.8
+      [4,]   11  3.9
+      [5,]   11  3.7
 ```
 
 The parameter `b` is a vector, and so the posterior simulations are a

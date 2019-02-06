@@ -1,0 +1,12 @@
+base
+MASS
+Matrix
+lme4
+arm
+bayesplot
+dplyr
+ggplot2
+knitr
+lubridate
+StanHeaders
+rstan
