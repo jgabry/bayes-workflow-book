@@ -381,20 +381,13 @@ model {
 }
 ```
 Here we wanted to assign a prior distribution not to the parameter `a`
-but to the shifted parameter `a+2b`.  The above code is executed
+but to the shifted parameter `a + 2b`.  The above code is executed
 directly, with an augmentation of "target" for every line with a
 tilde.
 
 ### Interpreting the objective function as the log posterior density {-}
-
-That is, the objective function is interpreted as being the log
-posterior density of the parameters, plus some arbitrary constant.
-Mathematically, if the objective function computed by Stan is
-$g(\theta,y)$, then the implied posterior density is
-$p(\theta|y)=\frac{1}{Z(y)}e^{g(\theta,y)}$, where $Z(y)=\int
-g(\theta,y)d\theta$.  To perform inference using this posterior
-distribution, is not necessary to actually evaluate the integral $Z$;
-it is enough to be able to compute $g$.
+The objective function computed by Stan is interpreted as being the log posterior density of the parameters plus some arbitrary constant. The posterior density here is denoted by $p(\theta|y)$ which is the probability distribution of the parameter(s) of interest conditional on the data. Mathematically if the objective function computed by Stan is $g(\theta,y)$, then the implied posterior density is $p(\theta|y)=\frac{1}{Z(y)}e^{g(\theta,y)}$, where $Z(y)=\int
+g(\theta,y)d\theta$. $Z(y)$ denotes the normalizing constant. To perform inference using this posterior distribution it is not necessary to actually evaluate the integral $Z$; it is enough to compute $g$ and obtain a distribution that is proportional to the posterior density. 
 
 ### Stan's fitting algorithms {-}
 
@@ -470,7 +463,7 @@ For this simple model, the values of the parameters at the optimum are
 close to the posterior median estimates obtained from to the NUTS fit
 earlier.  We also get the value of the objective function, which has
 no direct interpretation in this case, and a return code which
-represents the stability of the optimizer.  (A return code of 0 is
+represents the stability of the optimizer.  (A return code of $0$ is
 good news.)
 
 Interpreting the objective function as the log posterior density, the
@@ -583,7 +576,7 @@ Stan also computes for each parameter, transformed parameter,
 and generated quantity an "effective sample size" which represents
 the number of uncorrelated draws in the sample.
 For more information see section "Effective Sample Size"
-in Chapter "Posterior Analysis" of the _Stan Reference Manual_.
+in the chapter "Posterior Analysis" of the _Stan Reference Manual_.
 
 ### Blocks and declarations {-}
 
