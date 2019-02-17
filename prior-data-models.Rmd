@@ -96,7 +96,7 @@ information.
 
 For any fixed model, as the sample size increases, the likelihood
 becomes more informative.  This can be seen, for example, in the
-mdoels above, where each additional data point adds another term to
+models above, where each additional data point adds another term to
 the likelihood in the implicit vector addition of the `target +=` or
 `~` statement.  See Chapter 4 of _Bayesian Data Analysis_ for more on
 this.
@@ -207,7 +207,7 @@ We consider 5 levels of priors:
 
 - Specific informative prior: normal(0.4, 0.2) or whatever. Sometimes this can be expressed as a scaling followed by a generic prior: theta = 0.4 + 0.2*z; z ~ normal(0, 1);
 
-In Stan, if you don't supply any prior at all, you are implicitly using a flat prior.  In general we don't recommend this, but for many cases in this book, such as the Hello World example above, we use flat priors for simplicity and because we are focuseing on the expression of the data model or likelihood.
+In Stan, if you don't supply any prior at all, you are implicitly using a flat prior.  In general we don't recommend this, but for many cases in this book, such as the Hello World example above, we use flat priors for simplicity and because we are focusing on the expression of the data model or likelihood.
 
 Setting up priors goes along with setting up the model.  You want to set up your parameters so they are understandable, and then you will typically have some sense of their possible range, and you can use this to set up priors.  If you have a lot of data, the prior won't matter much, but there are lots of real examples where data are weak and it it is helpful to use an informative prior.
 
