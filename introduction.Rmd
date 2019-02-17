@@ -6,16 +6,16 @@
 
 Bayesian inference is a statistical power tool.  It enables you to use prior knowledge and observed data to build a probability model. Your data and unknowns are embedded in this probability model and you construct a "posterior distribution". 
 
-The prior distribution represents the knowledge that you have about the world from past experiments, research or simply scientific truths. The observed data is represented by the ubiquitous likelihood function. We then employ Bayes' rule to combine the prior and likelihood and approximate the posterior distribution. Once you have this posterior you can make inferences and predictions about everything.
+The prior distribution represents the knowledge that you have about the world from past experiments, research or simply scientific truths. The observed or collected data is represented by the ubiquitous likelihood function. We then employ Bayes' rule to combine the prior and likelihood and approximate the posterior distribution. Once you have this posterior you can make inferences and predictions about everything. A noteworthy feature of the parameter of interest in the Bayesian framework is that just like the data the parameter too has its own distribution and is therefore probabilistic.  
 
 Stan is a platform for statistical modeling and high-performance
 statistical computation. Given the prior and the data or likelihood function, Stan uses computational methods to approximate the posterior distribution. 
 
-A big challenge for applied Bayesian inference is computation and scalability. Converting the mathematical expression of the posterior distribution into specific inferences or predictions (e.g the probability that some coefficient of interest is postive or the 90% predictive interval for some future outcome) can be difficult. For even moderately large or complex problems these quantities are expressed in terms of high-dimensional integrals with no closed-form expressions.
+A big challenge for applied Bayesian inference is computation and scalability. Converting the mathematical expression of the posterior distribution into specific inferences or predictions (e.g the probability that some coefficient of interest is postive or the 90% predictive interval for some future outcome) can be difficult. For even moderately large or complex problems these quantities are expressed in terms of high-dimensional integrals with no closed-form expressions. This usually means for most problems it is extremely difficult or impossible to obtain an analytical solution or expression for the posterior distribution. Stan helps us get around this problem using computational methods that allow us to sample from a distribution that is proportional to the posterior. Scaling up this computation to larger, multi-dimensional problems however, remains a challenge.
 
 
 Over the past fifty years, a series of advances in
-computational statistics have allowed these integrals to be computed
+computational statistics have allowed these high-dimensional integrals to be computed
 using approximations and simulations.  The simulations use random
 numbers and are called "Monte Carlo methods," named after the city in
 Europe that is famous for its gambling casinos.  These methods were
@@ -143,7 +143,7 @@ Therefore we need to simulate some data
 for the vector length `N` and a vector of values for both
 `x` and `y` using known values for model parameters
 `a`, `b`, and `sigma`.
-We can do this using Stan or directly in R:
+We can do this using Stan or directly in R (as demonstrated below):
 
 ```{r echo=TRUE}
 N <- 100
@@ -190,12 +190,10 @@ to a strong model, and from this we get strong inferences.  But, as
 the saying goes, with great power comes great responsibility.  We need
 to vigilantly _check_ the fit of our models, following this up with
 model _improvement_.  As a result, Bayesian workflow does not involve
-fitting just one model to data.  We typically fit multiple models,
-including some models that we know are too simple (to get a sense of
-what is lost by not including certain features in our analysis) and
+fitting just one model to data and calling it a day when we've estimated our parameter values.  We typically fit multiple models, including some models that we know are too simple (to get a sense of what is lost by not including certain features in our analysis) and
 others that we suspect are too complex (to get a sense of the
 boundaries of what we can learn given the resolution of the our
-available data).
+available data). By doing this we are able to check the fit of different models, compare them to each other and thereby improve our models.
 
 _Model checking_ consists of the following steps:
 
@@ -308,9 +306,9 @@ model {
 ```
 Each line inside the loop adds a term to the objective function with
 the logarithm of the corresponding normal density; thus,
-$$\log(\frac{1}{\sqrt{2\pi}\sigma}\exp(-\frac{1}{2}(\frac{y_n - (a +
-bx_n)}{\sigma})^2)) = - \frac{1}{2}\log(2\pi) - \frac{1}{2}\log\sigma
-- \frac{1}{2}(\frac{y_n - (a + bx_n)}{\sigma})^2$$
+$$\log \bigg(\frac{1}{\sqrt{2\pi}\sigma}\exp \big(-\frac{1}{2}\big[\frac{y_n - (a +
+bx_n)}{\sigma}\big]^2 \big) \bigg) = - \frac{1}{2}\log(2\pi) - \frac{1}{2}\log\sigma
+- \frac{1}{2} \bigg(\frac{y_n - (a + bx_n)}{\sigma} \bigg)^2$$
 For most purposes,
 we do not care about arbitrary multiplicative constants in the
 posterior density or, equivalently, arbitrary additive constants in
