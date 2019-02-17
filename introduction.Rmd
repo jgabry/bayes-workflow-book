@@ -112,7 +112,7 @@ steps on that page.
 
 Our "Hello World" example is a linear regression,
 $$y_i=a+bx_i +\mbox{error}_i, \mbox{ for } i=1,\dots,N,$$ with errors
-independent and normally distributed with mean 0 and standard
+independent and normally distributed with mean $0$ and standard
 deviation $\sigma$.
 
 Just one little thing to be careful of: in statistical notation, the
@@ -321,7 +321,7 @@ For reasons that we shall discuss later, the above code is more
 efficient in vectorized form (without the loop).
 
 The relevant point of the above discussion is that the model block is
-where the objective function is computing, with distributional
+where the objective function is computed, with distributional
 statements corresponding to increments to the objective function.  We
 can make this explicit by rewriting the above model block as:
 ```
@@ -340,7 +340,7 @@ model {
 Here, "target" is the objective function, "lpdf" stands for "log
 probability density function," and the vertical bar is statistics
 notation for conditioning: thus, we are adding to the objective
-function the normal log density function of `y`, given mean `a+bx` and
+function the normal log density function of `y`, given mean `a + bx` and
 standard deviation `sigma`.
 
 Here is a slightly more elaborate version, in which we include
@@ -349,7 +349,7 @@ $\mbox{normal}(0,1)$ prior distributions for `a`, `b`, and `sigma`
 been constrained to be positive).  We will talk more about priors in a
 bit; for here, you can just think of these extra statements as
 representing additional information that the parameters `a`, `b`, and
-`sigma` are likely to be not too far from 0:
+`sigma` are likely to be not too far from $0$:
 ```
 model {
   y ~ normal(a + b * x, sigma);
