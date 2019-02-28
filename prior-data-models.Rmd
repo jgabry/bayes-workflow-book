@@ -1,5 +1,38 @@
 # Prior Distributions and Models for Data
 
+## The role of the prior distribution [Gelman, Simpson, Betancourt 2017]
+The prior distribution in Bayesian analysis fulfills many different purposes. The prior distribution contains information that is relevant to the problem under consideration. For example if your parameter of interest is a proportion or a probability, you know it has to be between 0 and $1$. The prior can encode this information that is known "apriori", i.e before designing an experiment or engaging with data. In the world of Stan and the practical estimation of Bayesian models it takes on another role by regularizing or constraining the possible parameter space. This helps with drawing inferences in high-dimensional problems. 
+
+## Priors {#general-priors.section}
+
+The prior only matters where the likelihood is nonzero (and vice-versa). The choice of prior depends on the problem at hand and we discuss prior choice more fully on the [prior choice wiki page](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations).
+
+We consider 5 levels of priors:
+
+- Flat prior;
+
+- Super-vague but proper prior: normal(0, 1e6);
+
+- Weakly informative prior, very weak: normal(0, 10);
+
+- Generic weakly informative prior: normal(0, 1);
+
+- Specific informative prior: normal(0.4, 0.2) or whatever. Sometimes this can be expressed as a scaling followed by a generic prior: theta = 0.4 + 0.2*z; z ~ normal(0, 1);
+
+In Stan, if you don't supply any prior at all, you are implicitly using a flat prior.  In general we don't recommend this, but for many cases in this book, such as the Hello World example in Chapter 1, we use flat priors for simplicity and because we are focusing on the expression of the data model or likelihood.
+
+Setting up priors goes along with setting up the model.  You want to set up your parameters so they are understandable, and then you will typically have some sense of their possible range, and you can use this to set up priors.  If you have a lot of data, the prior won't matter much, but there are lots of real examples where data are weak and it it is helpful to use an informative prior.
+
+### Background Reading {-}
+
+See @Gelman:2006 for an overview of choices for priors for
+scale parameters, @ChungEtAl:2013 for an overview of choices
+for scale priors in penalized maximum likelihood estimates, and
+@GelmanJakulinPittauEtAl:2008 for a discussion of prior choice
+for regression coefficients.
+
+
+
 ## Prior, likelihood, posterior densities; Bayes as information aggregation
 
 As discussed in the context of the Hello World example in chapter 1, a
@@ -191,33 +224,6 @@ Upsetting situations---for example, the estimate of $1 \pm 1$ which leads to a s
 
 
 
-## Priors {#general-priors.section}
-
-The prior only matters where the likelihood is nonzero (and vice-versa).  One way to think of the prior distribution is as a "regularization" or "soft constraint" on the parameters of the model.  We discuss prior choice more fully on the [prior choice wiki page](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations).
-
-We consider 5 levels of priors:
-
-- Flat prior;
-
-- Super-vague but proper prior: normal(0, 1e6);
-
-- Weakly informative prior, very weak: normal(0, 10);
-
-- Generic weakly informative prior: normal(0, 1);
-
-- Specific informative prior: normal(0.4, 0.2) or whatever. Sometimes this can be expressed as a scaling followed by a generic prior: theta = 0.4 + 0.2*z; z ~ normal(0, 1);
-
-In Stan, if you don't supply any prior at all, you are implicitly using a flat prior.  In general we don't recommend this, but for many cases in this book, such as the Hello World example above, we use flat priors for simplicity and because we are focusing on the expression of the data model or likelihood.
-
-Setting up priors goes along with setting up the model.  You want to set up your parameters so they are understandable, and then you will typically have some sense of their possible range, and you can use this to set up priors.  If you have a lot of data, the prior won't matter much, but there are lots of real examples where data are weak and it it is helpful to use an informative prior.
-
-### Background Reading {-}
-
-See @Gelman:2006 for an overview of choices for priors for
-scale parameters, @ChungEtAl:2013 for an overview of choices
-for scale priors in penalized maximum likelihood estimates, and
-@GelmanJakulinPittauEtAl:2008 for a discussion of prior choice
-for regression coefficients.
 
 ### Improper Uniform Priors {-}
 
