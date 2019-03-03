@@ -1,2 +1,0 @@
-
-# <i style="font-size: 110%; color:#990017;">References</i> {-}

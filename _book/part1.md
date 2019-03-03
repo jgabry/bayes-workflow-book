@@ -1,5 +1,0 @@
-
-# <i style="font-size: 110%; padding:1.5em 0 0 0; color:#990017;">Part 1:  Bayesian Workflow</i> {-}
-
-In this part of the book, we introduce the principles of Bayesian data analysis
-using Stan with straightforward examples.

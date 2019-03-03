@@ -1,4 +1,3 @@
-
 # Introduction
 
 ## Bayesian Data Analysis
@@ -7,16 +6,16 @@
 
 Bayesian inference is a statistical power tool.  It enables you to use prior knowledge and observed data to build a probability model. Your data and unknowns are embedded in this probability model and you construct a "posterior distribution". 
 
-The prior distribution represents the knowledge that you have about the world from past experiments, research or simply scientific truths. The observed data is represented by the ubiquitous likelihood function. We then employ Bayes' rule to combine the prior and likelihood and approximate the posterior distribution. Once you have this posterior you can make inferences and predictions about everything.
+The prior distribution represents the knowledge that you have about the world from past experiments, research or simply scientific truths. The observed or collected data is represented by the ubiquitous likelihood function. We then employ Bayes' rule to combine the prior and likelihood and approximate the posterior distribution. Once you have this posterior you can make inferences and predictions about everything. A noteworthy feature of the parameter of interest in the Bayesian framework is that just like the data the parameter too has its own distribution and is therefore probabilistic.  
 
 Stan is a platform for statistical modeling and high-performance
 statistical computation. Given the prior and the data or likelihood function, Stan uses computational methods to approximate the posterior distribution. 
 
-A big challenge for applied Bayesian inference is computation and scalability. Converting the mathematical expression of the posterior distribution into specific inferences or predictions (e.g the probability that some coefficient of interest is postive or the 90% predictive interval for some future outcome) can be difficult. For even moderately large or complex problems these quantities are expressed in terms of high-dimensional integrals with no closed-form expressions.
+A big challenge for applied Bayesian inference is computation and scalability. Converting the mathematical expression of the posterior distribution into specific inferences or predictions (e.g the probability that some coefficient of interest is postive or the 90% predictive interval for some future outcome) can be difficult. For even moderately large or complex problems these quantities are expressed in terms of high-dimensional integrals with no closed-form expressions. This usually means for most problems it is extremely difficult or impossible to obtain an analytical solution or expression for the posterior distribution. Stan helps us get around this problem using computational methods that allow us to sample from a distribution that is proportional to the posterior. Scaling up this computation to larger, multi-dimensional problems however, remains a challenge.
 
 
 Over the past fifty years, a series of advances in
-computational statistics have allowed these integrals to be computed
+computational statistics have allowed these high-dimensional integrals to be computed
 using approximations and simulations.  The simulations use random
 numbers and are called "Monte Carlo methods," named after the city in
 Europe that is famous for its gambling casinos.  These methods were
@@ -113,7 +112,7 @@ steps on that page.
 
 Our "Hello World" example is a linear regression,
 $$y_i=a+bx_i +\mbox{error}_i, \mbox{ for } i=1,\dots,N,$$ with errors
-independent and normally distributed with mean 0 and standard
+independent and normally distributed with mean $0$ and standard
 deviation $\sigma$.
 
 Just one little thing to be careful of: in statistical notation, the
@@ -126,21 +125,8 @@ of a statistical model we use Greek letters and math notation.
 
 Here is the full model written in Stan:
 
-
-```
-data {
-  int<lower=0> N;
-  vector[N] x;
-  vector[N] y;
-}
-parameters {
-  real a;
-  real b;
-  real<lower=0> sigma;
-}
-model {
-  y ~ normal(a + b * x, sigma);
-}
+```{r}
+print_file("stan/simplest-regression.stan")
 ```
 
 The program has three named blocks: the data block which
@@ -157,10 +143,9 @@ Therefore we need to simulate some data
 for the vector length `N` and a vector of values for both
 `x` and `y` using known values for model parameters
 `a`, `b`, and `sigma`.
-We can do this using Stan or directly in R:
+We can do this using Stan or directly in R (as demonstrated below):
 
-
-```r
+```{r echo=TRUE}
 N <- 100
 a <- 10
 b <- 4
@@ -176,32 +161,19 @@ This object is passed into the Stan algorithm which
 fits the the model with the simulated data.
 In this example we use Stan's default sampling algorithm:
 
-
-```r
+```{r ex-fit-cmd, echo=TRUE, eval=FALSE}
 fit <- stan("stan/simplest-regression.stan", data=hello_data)
 ```
-
+```{r ex-fit-cmd-do, include=FALSE}
+fit <- stan("stan/simplest-regression.stan", data=hello_data, refresh=0)
+```
 
 To evaluate the fit,
 we can print the estimates of the model parameters
 `a`, `b`, and `sigma`:
 
-
-```r
+```{r ex-fit-print, echo=TRUE}
 print(fit, pars=c("a","b","sigma"), probs=c(0.025,0.975))
-Inference for Stan model: simplest-regression.
-4 chains, each with iter=2000; warmup=1000; thin=1; 
-post-warmup draws per chain=1000, total post-warmup draws=4000.
-
-      mean se_mean   sd 2.5%  98% n_eff Rhat
-a     11.4    0.02 0.97  9.4 13.2  1955    1
-b      3.8    0.00 0.16  3.5  4.1  1921    1
-sigma  4.9    0.01 0.36  4.3  5.7  2275    1
-
-Samples were drawn using NUTS(diag_e) at Wed Feb  6 21:44:39 2019.
-For each parameter, n_eff is a crude measure of effective sample size,
-and Rhat is the potential scale reduction factor on split chains (at 
-convergence, Rhat=1).
 ```
 
 To simulate the data `y` we picked `10`, `4` and `5` as
@@ -218,12 +190,10 @@ to a strong model, and from this we get strong inferences.  But, as
 the saying goes, with great power comes great responsibility.  We need
 to vigilantly _check_ the fit of our models, following this up with
 model _improvement_.  As a result, Bayesian workflow does not involve
-fitting just one model to data.  We typically fit multiple models,
-including some models that we know are too simple (to get a sense of
-what is lost by not including certain features in our analysis) and
+fitting just one model to data and calling it a day when we've estimated our parameter values.  We typically fit multiple models, including some models that we know are too simple (to get a sense of what is lost by not including certain features in our analysis) and
 others that we suspect are too complex (to get a sense of the
 boundaries of what we can learn given the resolution of the our
-available data).
+available data). By doing this we are able to check the fit of different models, compare them to each other and thereby improve our models.
 
 _Model checking_ consists of the following steps:
 
@@ -336,9 +306,9 @@ model {
 ```
 Each line inside the loop adds a term to the objective function with
 the logarithm of the corresponding normal density; thus,
-$$\log(\frac{1}{\sqrt{2\pi}\sigma}\exp(-\frac{1}{2}(\frac{y_n - (a +
-bx_n)}{\sigma})^2)) = - \frac{1}{2}\log(2\pi) - \frac{1}{2}\log\sigma
-- \frac{1}{2}(\frac{y_n - (a + bx_n)}{\sigma})^2$$
+$$\log \bigg(\frac{1}{\sqrt{2\pi}\sigma}\exp \big(-\frac{1}{2}\big[\frac{y_n - (a +
+bx_n)}{\sigma}\big]^2 \big) \bigg) = - \frac{1}{2}\log(2\pi) - \frac{1}{2}\log\sigma
+- \frac{1}{2} \bigg(\frac{y_n - (a + bx_n)}{\sigma} \bigg)^2$$
 For most purposes,
 we do not care about arbitrary multiplicative constants in the
 posterior density or, equivalently, arbitrary additive constants in
@@ -351,7 +321,7 @@ For reasons that we shall discuss later, the above code is more
 efficient in vectorized form (without the loop).
 
 The relevant point of the above discussion is that the model block is
-where the objective function is computing, with distributional
+where the objective function is computed, with distributional
 statements corresponding to increments to the objective function.  We
 can make this explicit by rewriting the above model block as:
 ```
@@ -370,7 +340,7 @@ model {
 Here, "target" is the objective function, "lpdf" stands for "log
 probability density function," and the vertical bar is statistics
 notation for conditioning: thus, we are adding to the objective
-function the normal log density function of `y`, given mean `a+bx` and
+function the normal log density function of `y`, given mean `a + bx` and
 standard deviation `sigma`.
 
 Here is a slightly more elaborate version, in which we include
@@ -379,7 +349,7 @@ $\mbox{normal}(0,1)$ prior distributions for `a`, `b`, and `sigma`
 been constrained to be positive).  We will talk more about priors in a
 bit; for here, you can just think of these extra statements as
 representing additional information that the parameters `a`, `b`, and
-`sigma` are likely to be not too far from 0:
+`sigma` are likely to be not too far from $0$:
 ```
 model {
   y ~ normal(a + b * x, sigma);
@@ -411,20 +381,13 @@ model {
 }
 ```
 Here we wanted to assign a prior distribution not to the parameter `a`
-but to the shifted parameter `a+2b`.  The above code is executed
+but to the shifted parameter `a + 2b`.  The above code is executed
 directly, with an augmentation of "target" for every line with a
 tilde.
 
 ### Interpreting the objective function as the log posterior density {-}
-
-That is, the objective function is interpreted as being the log
-posterior density of the parameters, plus some arbitrary constant.
-Mathematically, if the objective function computed by Stan is
-$g(\theta,y)$, then the implied posterior density is
-$p(\theta|y)=\frac{1}{Z(y)}e^{g(\theta,y)}$, where $Z(y)=\int
-g(\theta,y)d\theta$.  To perform inference using this posterior
-distribution, is not necessary to actually evaluate the integral $Z$;
-it is enough to be able to compute $g$.
+The objective function computed by Stan is interpreted as being the log posterior density of the parameters plus some arbitrary constant. The posterior density here is denoted by $p(\theta|y)$ which is the probability distribution of the parameter(s) of interest conditional on the data. Mathematically if the objective function computed by Stan is $g(\theta,y)$, then the implied posterior density is $p(\theta|y)=\frac{1}{Z(y)}e^{g(\theta,y)}$, where $Z(y)=\int
+g(\theta,y)d\theta$. $Z(y)$ denotes the normalizing constant. To perform inference using this posterior distribution it is not necessary to actually evaluate the integral $Z$; it is enough to compute $g$ and obtain a distribution that is proportional to the posterior density. 
 
 ### Stan's fitting algorithms {-}
 
@@ -451,8 +414,7 @@ the output of Stan is a list of posterior simulations.
 
 We have already seen an example of this above:
 
-
-```r
+```{r ex-fit-cmd-again, echo=TRUE, eval=FALSE}
 fit <- stan("stan/simplest-regression.stan", data=hello_data)
 ```
 
@@ -461,20 +423,11 @@ posterior simulations and also some other information regarding the
 settings of the fitting algorithm.  Here, for example, we access some
 simulations:
 
-
-```r
+```{r echo=TRUE}
 sims_as_matrix <- as.matrix(fit)
 print(sims_as_matrix[1:5,])
-          parameters
-iterations  a   b sigma lp__
-      [1,] 12 3.7   5.1 -207
-      [2,] 12 3.8   4.8 -206
-      [3,] 12 3.9   4.8 -207
-      [4,] 11 3.8   4.6 -206
-      [5,] 12 3.8   4.8 -206
 sims_as_list <- extract(fit)
 print(sims_as_list$a[1:5])
-[1] 11 12 13 12 12
 ```
 
 Each row of the above matrix is a different posterior simulation: we
@@ -489,35 +442,28 @@ objective function, and Stan returns the value of the parameters at
 this estimated mode along with the computed value of the objective
 function.  Here is an example:
 
-
-```r
+```{r ex-opt-cmd, echo=TRUE, eval=FALSE}
 simplest <- stan_model("stan/simplest-regression.stan")
 fit_2 <- optimizing(simplest, data=hello_data)
 ```
-
+```{r ex-opt-do, include=FALSE}
+simplest <- stan_model("stan/simplest-regression.stan")
+fit_2 <- optimizing(simplest, data=hello_data)
+```
 
 In this case we broke the computation into two steps, first compiling
 and saving the compiled model into the R object "simplest" and then
 performing the optimizer on this program.  And here is the result:
 
-
-```
-$par
-    a     b sigma 
- 11.4   3.8   4.8 
-
-$value
-[1] -207
-
-$return_code
-[1] 0
+```{r ex-opt-fit}
+print(fit_2)
 ```
 
 For this simple model, the values of the parameters at the optimum are
 close to the posterior median estimates obtained from to the NUTS fit
 earlier.  We also get the value of the objective function, which has
 no direct interpretation in this case, and a return code which
-represents the stability of the optimizer.  (A return code of 0 is
+represents the stability of the optimizer.  (A return code of $0$ is
 good news.)
 
 Interpreting the objective function as the log posterior density, the
@@ -630,7 +576,7 @@ Stan also computes for each parameter, transformed parameter,
 and generated quantity an "effective sample size" which represents
 the number of uncorrelated draws in the sample.
 For more information see section "Effective Sample Size"
-in Chapter "Posterior Analysis" of the _Stan Reference Manual_.
+in the chapter "Posterior Analysis" of the _Stan Reference Manual_.
 
 ### Blocks and declarations {-}
 
@@ -668,28 +614,21 @@ into _blocks_:
 
 Here is an example of a Stan model with a vector parameter:
 
-
-```
-data {
-  int<lower=0> N;
-  int<lower=0> K;
-  matrix[N,K] X;
-  vector[N] y;
-}
-parameters {
-  vector[K] b;
-  real<lower=0> sigma;
-}
-model {
-  y ~ normal(X*b, sigma);
-}
+```{r}
+print_file("stan/vector-regression.stan")
 ```
 
 To fit this model, we simply reconfigure the data by constructing the
 matrix of predictors and then run from R:
 
-
-```r
+```{r ex-vector-cmd,  echo=TRUE, eval=FALSE}
+ones <- rep(1, N)
+X <- cbind(ones, x)
+K <- 2
+data_3 <- list(N=N, K=K, X=X, y=y)
+fit_3 <- stan("stan/vector-regression.stan", data=data_3)
+```
+```{r ex-vector-do,  include=FALSE}
 ones <- rep(1, N)
 X <- cbind(ones, x)
 K <- 2
@@ -697,50 +636,20 @@ data_3 <- list(N=N, K=K, X=X, y=y)
 fit_3 <- stan("stan/vector-regression.stan", data=data_3)
 ```
 
-
 Here is the result:
 
-
-```
-Inference for Stan model: vector-regression.
-4 chains, each with iter=2000; warmup=1000; thin=1; 
-post-warmup draws per chain=1000, total post-warmup draws=4000.
-
-        mean se_mean   sd   2.5%    25%    50%    75%    98% n_eff Rhat
-b[1]    11.4    0.02 0.99    9.4   10.7   11.3   12.0   13.3  1635    1
-b[2]     3.8    0.00 0.16    3.5    3.7    3.8    3.9    4.1  1660    1
-sigma    4.9    0.01 0.35    4.3    4.7    4.9    5.2    5.7  2507    1
-lp__  -207.0    0.04 1.23 -210.2 -207.6 -206.7 -206.1 -205.6  1237    1
-
-Samples were drawn using NUTS(diag_e) at Wed Feb  6 21:45:30 2019.
-For each parameter, n_eff is a crude measure of effective sample size,
-and Rhat is the potential scale reduction factor on split chains (at 
-convergence, Rhat=1).
+```{r}
+print(fit_3)
 ```
 
 And here is what happens if we grab the matrix or list of posterior
 simulations:
 
-
-```r
+```{r echo=TRUE}
 sims_as_matrix <- as.matrix(fit_3)
 print(sims_as_matrix[1:5,])
-          parameters
-iterations b[1] b[2] sigma lp__
-      [1,]   12  3.7   4.5 -206
-      [2,]   11  3.8   4.8 -206
-      [3,]   11  3.9   5.1 -206
-      [4,]   10  3.9   5.2 -207
-      [5,]   12  3.8   5.2 -206
 sims_as_list <- extract(fit_3)
 print(sims_as_list$b[1:5,])
-          
-iterations [,1] [,2]
-      [1,]   12  3.6
-      [2,]   11  3.8
-      [3,]   12  3.8
-      [4,]   11  3.9
-      [5,]   11  3.7
 ```
 
 The parameter `b` is a vector, and so the posterior simulations are a
