@@ -48,8 +48,13 @@ information, all of it is just information that is fed into the
 inference engine.
 
 ## Example:  apparently duplicate priors
+This example demonstrates how the posterior mean is a weighted average of the prior and likelihood mean. It enables you to see how the prior and posterior mean combine to express information. 
+First generate your data in R, by drawing a single observation from a normal distribution (with arbitrarily chose mean and variance).
+```
+y <- rnorm(1,10,2)
+```
 
-Start with the following simple Stan program:
+Then use the following Stan program to estimate your posterior mean $\theta$
 
 ```
 data {
@@ -66,7 +71,12 @@ model {
 
 Here, the prior and data happen to provide the same amount of
 information about $\theta$, and the posterior mean of $\theta$ will
-fall halfway between the data, $y$, and the prior mean, 0.
+fall halfway between the data, $y$, and the prior mean, 0. 
+This comes from the formula
+$$
+\theta = \frac{\frac{y}{\sigma^2} + \frac{\theta_0}{\sigma_0^2}}{\frac{1}{\sigma^2} + \frac{1}{\sigma_0^2}}
+$$
+where $\theta_0 = 0$, $\sigma = \sigma_0 = 1$. You will find that the posterior estimate of $\theta$ is the average of 0 and y.
 
 Now suppose we add a new line to the model block, apparently
 duplicating the prior:
