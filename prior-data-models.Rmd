@@ -1,4 +1,5 @@
 # Prior Distributions and Models for Data
+what is a prior?, how does it combine with data?, what are types of priors?, what is the role of the likelihood?, problems with non informative priors and other examples
 
 ## The role of the prior distribution [Gelman, Simpson, Betancourt 2017]
 The prior distribution in Bayesian analysis fulfills many different purposes. The prior distribution contains information that is relevant to the problem under consideration. For example if your parameter of interest is a proportion or a probability, you know it has to be between 0 and $1$. The prior can encode this information that is known "apriori", i.e before designing an experiment or engaging with data. In the world of Stan and the practical estimation of Bayesian models it takes on another role by regularizing or constraining the possible parameter space. This helps with drawing inferences in high-dimensional problems. 
@@ -51,7 +52,7 @@ inference engine.
 This example demonstrates how the posterior mean is a weighted average of the prior and likelihood mean. It enables you to see how the prior and posterior mean combine to express information. 
 First generate your data in R, by drawing a single observation from a normal distribution (with arbitrarily chose mean and variance).
 ```
-y <- rnorm(1,10,2)
+y <- rnorm(n = 1, mean = 10, sd = 2)
 ```
 
 Then use the following Stan program to estimate your posterior mean $\theta$
@@ -135,7 +136,7 @@ insight into the way that priors and data combine to express
 information.
 
 
-## Concentration of the likelihood
+## [REVISIT] Concentration of the likelihood
 
 For any fixed model, as the sample size increases, the likelihood
 becomes more informative.  This can be seen, for example, in the
@@ -144,7 +145,7 @@ the likelihood in the implicit vector addition of the `target +=` or
 `~` statement.  See Chapter 4 of _Bayesian Data Analysis_ for more on
 this.
 
-## Problems with so-called noninformative priors
+## Problems with so-called noninformative priors [objective - Prior information not included in models!]
 
 Before discussing prior distributions more generally, we share a simple example.
 
