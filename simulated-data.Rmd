@@ -1,12 +1,48 @@
-# Fake-data Simulation
+# Simulating Data
+
+The initial stage of model checking consists of using simulated data
+to fit the model and then comparing the posterior distribution of the
+estimated parameters with the parameter values used in the simulation.
+This procedure diagnoses problems which arise from the Stan language
+program, i.e., the implementation of the model.
+Models which are programmatically correct may fail to fit real data
+because a model is only an approximation of the true data-generating process
+and a poor approximation results in a poor fit.
+
+Simulating data is a stepwise process:
+
+- Choose values for all _constants_ in the target model
+- Simulate _parameters_ from the prior
+- Simulate the _data_ from the parameters
+
 
 ## "Hello World" example
 
-We demonstrate fake-data simulation with the linear regression example from the previous chapter.  Here is the Stan program:
+We demonstrate simulating data with the linear regression example from the previous chapter.  Here is the Stan program:
 
 ```{r}
+
 print_file("stan/simplest-regression.stan")
 ```
+
+The variables in this model consists of
+- a constant integer value `N`
+- parallel data vectors `x` and `y` of the predictor and observed outcome values.
+- regression parameters `a`, `b`, and `sigma`
+
+To simulate data for this model, first we choose a positive integer value for `N`.  In this example, we set $N = 50$.
+
+To simulate the parameters from the prior, we need to:
+- understand default prior
+- have access to a function which generates random values according to a specified probability distribution.
+
+************
+
+
+The program doesn't specify priors on any of the parameters, therefore
+the Stan uses uniform(-infinity, +infinity) as the default prior.
+
+
 
 ### Simulating fake data conditional on assumed parameter values
 
@@ -99,7 +135,7 @@ uncertainty of the inferences.
 
 Do an example here
 
-## Topics in fake-data simulation
+## Topics in simulating data
 
 We will expand upon these topics:
 
@@ -107,8 +143,8 @@ We will expand upon these topics:
 
 - When choosing assumed parameter values can give a bad answer (if they're in the tail of the prior)
 
-- Fake-data simulation for hierarchical models:  You can choose assumed values for the hyperparameters but you should draw the lower-level parameters from the model
+- simulating data for hierarchical models:  You can choose assumed values for the hyperparameters but you should draw the lower-level parameters from the model
 
 - Choosing or drawing random values for unmodeled data such as N and x
 
-- What if fake-data simulation gives a bad answer, if the model cannot recover the assumed parameter values?
+- What if simulating data gives a bad answer, if the model cannot recover the assumed parameter values?
