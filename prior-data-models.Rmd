@@ -25,9 +25,10 @@ inference as information aggregation: Prior information, data
 information, all of it is just information that is fed into the
 inference engine.
 
-## Example:  apparently duplicate priors
+<!-- ## Example:  apparently duplicate priors -->
+### Example : apparently duplicate priors
 This example demonstrates how the posterior mean is a weighted average of the prior and likelihood mean. It enables you to see how the prior and posterior mean combine to express information. 
-First generate your data in R, by drawing a single observation from a normal distribution (with arbitrarily chose mean and variance).
+First generate your data in R, by drawing a single observation from a normal distribution (with arbitrarily chosen mean and variance).
 ```
 y <- rnorm(n = 1, mean = 10, sd = 2)
 ```
@@ -112,17 +113,159 @@ as it just looks confusing.  But understanding how it works gives
 insight into the way that priors and data combine to express
 information.
 
-## Concentration of the likelihood
-For any fixed model, as the sample size increases, the likelihood
-becomes more informative.  This can be seen, for example, in the
-models above, where each additional data point adds another term to
-the likelihood in the implicit vector addition of the `target +=` or
-`~` statement.  See Chapter 4 of _Bayesian Data Analysis_ for more on
-this.
+<!-- ## Concentration of the likelihood -->
+### Example : Concentration of the likelihood
 
-```{r}
-print(seq(1,10))
+Given that the posterior is a compromise between the prior and likelihood,for any fixed model, as the sample size increases, the likelihood
+becomes more informative. 
+Consider the following example;
+Say you have data $y$ generated from a normal distribution as shown below;
 ```
+set.seed(24)
+y <- rnorm(5,100,2)
+N <- length(y)
+```
+Now say we use the following model to estimate the mean of the data with known standard deviation = 2.
+```
+data{
+    int N;
+    real y[N];
+  }
+parameters {
+    real mu;
+  }
+model{
+    y ~ normal(mu, 2);
+    mu ~ normal(10,2);
+  }
+```
+Given we have generated only 5 data points and have supplied the prior information that the mean is around 10 we observe the following posterior distribution.
+```{r, results = F}
+set.seed(24)
+y <- rnorm(5,100,2)
+N <- length(y)
+stan_mod <- "
+  data {
+    int N;
+    real y[N];
+  }
+  parameters {
+    real mu;
+  }
+  model {
+    y ~ normal(mu, 2);
+    mu ~ normal(10,2);
+  }"
+
+f2 <- stan(model_code = stan_mod,
+           data = list("N",
+                       "y"),
+           iter = 1000,
+           chains = 3)
+
+
+
+#pulling results
+f2_results <- as.data.frame(f2)
+
+#making the plot
+```
+
+```{r, echo = F}
+set.seed(24)
+#likelihood
+plot(density(y),
+     col = "red",
+     main = paste0("sample size (N) =",N),
+     xlab = NA,
+     bty = 'n',
+     xlim = c(0,130))
+legend("topright",
+       legend = c("prior",
+                  "likelihood",
+                  "posterior"),
+       col = c("blue",
+               "red",
+               "green"),
+       bty = 'n',
+       lty = c(1,1,1),
+       cex = 0.6)
+
+#prior
+lines(density(rnorm(N,10,3)),
+      col = "blue")
+
+#posterior
+lines(density(rnorm(N,
+                    mean(f2_results$mu),
+                    2)),
+      col = "green")
+```
+It is clearly visible that the posterior distribution falls between the prior and likelihood. But what if we were to increase the sample size to say, 50?
+```{r, results = F}
+set.seed(24)
+y <- rnorm(50,100,2)
+N <- length(y)
+stan_mod <- "
+  data {
+    int N;
+    real y[N];
+  }
+  parameters {
+    real mu;
+  }
+  model {
+    y ~ normal(mu, 2);
+    mu ~ normal(10,2);
+  }"
+
+f2 <- stan(model_code = stan_mod,
+           data = list("N",
+                       "y"),
+           iter = 1000,
+           chains = 3)
+
+
+
+#pulling results
+f2_results <- as.data.frame(f2)
+
+#making the plot
+```
+
+```{r, echo = F}
+set.seed(24)
+#likelihood
+plot(density(y),
+     col = "red",
+     main = paste0("sample size (N) =",N),
+     xlab = NA,
+     bty = 'n',
+     xlim = c(0,130))
+legend("topright",
+       legend = c("prior",
+                  "likelihood",
+                  "posterior"),
+       col = c("blue",
+               "red",
+               "green"),
+       bty = 'n',
+       lty = c(1,1,1),
+       cex = 0.6)
+
+#prior
+lines(density(rnorm(N,10,3)),
+      col = "blue")
+
+#posterior
+lines(density(rnorm(N,
+                    mean(f2_results$mu),
+                    2)),
+      col = "green")
+```
+Evidently the likelihood becomes more informative and the posterior distribution moves much closer to the likelihood. Given that we know the actual mean of $y$ is 100 and the standard deviation is 2, we can infer that our posterior is very closely approximating the true data generating process. It can be seen in the above example that each additional data point adds another term to the likelihood in the implicit vector addition of the `target +=` or `~` statement.  See Chapter 4 of _Bayesian Data Analysis_ for more on
+this. 
+
 
 ## Priors {#general-priors.section}
 
