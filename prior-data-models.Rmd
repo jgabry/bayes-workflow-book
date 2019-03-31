@@ -176,31 +176,34 @@ set.seed(24)
 #likelihood
 # print(y)
 plot(density(y),
-     col = "red",
+     col = "darkgray",
      main = paste0("sample size (N) =",N),
      xlab = NA,
      bty = 'n',
-     xlim = c(0,130))
+     xlim = c(0,130),
+     lty = 1)
 legend("topright",
        legend = c("prior",
                   "likelihood",
                   "posterior"),
-       col = c("blue",
-               "red",
-               "green"),
+       col = c("black",
+               "darkgray",
+               "black"),
        bty = 'n',
-       lty = c(1,1,1),
+       lty = c(3,1,1),
        cex = 0.6)
 
 #prior
 lines(density(rnorm(N,10,3)),
-      col = "blue")
+      col = "black",
+      lty = 3)
 
 #posterior
 lines(density(rnorm(N,
                     mean(f2_results$mu),
                     2)),
-      col = "green")
+      col = "black",
+      lty = 1)
 ```
 It is clearly visible that the posterior distribution falls between the prior and likelihood. But what if we were to increase the sample size to say, 50?
 ```{r, results = F}
@@ -237,34 +240,38 @@ f2_results <- as.data.frame(f2)
 ```{r, echo = F}
 set.seed(24)
 #likelihood
+# print(y)
 plot(density(y),
-     col = "red",
+     col = "darkgray",
      main = paste0("sample size (N) =",N),
      xlab = NA,
      bty = 'n',
-     xlim = c(0,130))
+     xlim = c(0,130),
+     lty = 1)
 legend("topright",
        legend = c("prior",
                   "likelihood",
                   "posterior"),
-       col = c("blue",
-               "red",
-               "green"),
+       col = c("black",
+               "darkgray",
+               "black"),
        bty = 'n',
-       lty = c(1,1,1),
+       lty = c(3,1,1),
        cex = 0.6)
 
 #prior
 lines(density(rnorm(N,10,3)),
-      col = "blue")
+      col = "black",
+      lty = 3)
 
 #posterior
 lines(density(rnorm(N,
                     mean(f2_results$mu),
                     2)),
-      col = "green")
+      col = "black",
+      lty = 1)
 ```
-Evidently the likelihood becomes more informative and the posterior distribution moves much closer to the likelihood. Given that we know the actual mean of $y$ is 100 and the standard deviation is 2, we can infer that our posterior is very closely approximating the true data generating mean. It can be seen in the above example that each additional data point adds another term to the likelihood in the implicit vector addition of the `target +=` or `~` statement.  See Chapter 4 of _Bayesian Data Analysis_ for more on
+Evidently the likelihood becomes more informative and the posterior distribution moves much closer to the likelihood. Given that we know the actual mean of$y$ is 100 and the standard deviation is 2, we can infer that our posterior is very closely approximating the true data generating mean. It can be seen in the above example that each additional data point adds another term to the likelihood in the implicit vector addition of the `target +=` or `~` statement.  See Chapter 4 of _Bayesian Data Analysis_ for more on
 this.
 
 
