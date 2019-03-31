@@ -515,93 +515,90 @@ for regression coefficients.
 
 
 
-<!-- ## Problems with so-called noninformative priors [objective - Prior information not included in models!] -->
+### Example : Problems with so-called noninformative priors, excluding prior information {-}
+Say you have a single parameter $\theta$ which we estimate using an
+experiment which returns an estimate $y$.  For simplicity, assume the
+estimate is unbiased, normally distributed, and with known standard
+deviation that happens to equal 1.  Thus, the data model is:
+$$
+y \sim \mbox{normal}(\theta,1).
+$$
+Now suppose you perform Bayesian inference using a uniform prior on
+$\theta$.  Then your posterior distribution is simply (see, for
+example, chapter 2 of _Bayesian Data Analysis_),
+$$
+\theta|y \sim \mbox{normal}(y,1).
+$$
 
-<!-- Before discussing prior distributions more generally, we share a simple example. -->
+OK, fine.  Now suppose your estimate happens to be $y=1$.  There are
+two ways of thinking about this:
 
-<!-- You have a single parameter $\theta$ which we estimate using an -->
-<!-- experiment which returns an estimate $y$.  For simplicity, assume the -->
-<!-- estimate is unbiased, normally distributed, and with known standard -->
-<!-- deviation that happens to equal 1.  Thus, the data model is: -->
-<!-- $$ -->
-<!-- y \sim \mbox{normal}(\theta,1). -->
-<!-- $$ -->
-<!-- Now suppose you perform Bayesian inference using a uniform prior on -->
-<!-- $\theta$.  Then your posterior distribution is simply (see, for -->
-<!-- example, chapter 2 of _Bayesian Data Analysis_), -->
-<!-- $$ -->
-<!-- \theta|y \sim \mbox{normal}(y,1). -->
-<!-- $$ -->
+* The observed data, 1 standard error away from 0, is completely
+  consistent with a true value of $\theta=0$, or of low values of
+  $\theta$ that could be either positive or negative.  From our usual
+  statistical perspective, we would say that the data are consistent
+  with pure noise, and we cannot learn much from these data alone.
 
-<!-- OK, fine.  Now suppose your estimate happens to be $y=1$.  There are -->
-<!-- two ways of thinking about this: -->
+* From the Bayesian posterior distribution, we can compute that
+  $\mbox{Pr}(\theta>0) = 0.84$ (in R, `pnorm(q = 0, mean = 1, sd = 1, lower.tail = F)`), thus you should be
+  willing to bet with 5-to-1 odds that $\theta$ is positive.
 
-<!-- * The observed data, 1 standard error away from 0, is completely -->
-<!--   consistent with a true value of $\theta=0$, or of low values of -->
-<!--   $\theta$ that could be either positive or negative.  From our usual -->
-<!--   statistical perspective, we would say that the data are consistent -->
-<!--   with pure noise, and we cannot learn much from these data alone. -->
+This seems wrong, the idea that something recognizable as pure noise
+can lead to 5:1 posterior odds.
 
-<!-- * From the Bayesian posterior distribution, we can compute that -->
-<!--   $\mbox{Pr}(\theta>0) = 0.84$ (in R, `pnorm(1)`), thus you should be -->
-<!--   willing to bet with 5-to-1 odds that $\theta$ is positive. -->
+The problem is coming from the prior distribution. We can see this in
+two ways. First, just directly, effects near zero are more common than
+large effects.
 
-<!-- This seems wrong, the idea that something recognizable as pure noise -->
-<!-- can lead to 5:1 posterior odds. -->
+Jakulin et al. (2008) argue that logistic regression coefficients are
+usually less than 1. So let's try combining normal(1,1) data with a
+Cauchy(0,1) prior. It's easy enough to do in Stan:
 
-<!-- The problem is coming from the prior distribution. We can see this in -->
-<!-- two ways. First, just directly, effects near zero are more common than -->
-<!-- large effects. -->
+```
+data {
+  real y;
+}
+parameters {
+  real theta;
+}
+model {
+  theta ~ cauchy (0, 1);
+  y ~ normal(theta, 1);
+}
+```
 
-<!-- Jakulin et al. (2008) argue that logistic regression coefficients are -->
-<!-- usually less than 1. So let's try combining normal(1,1) data with a -->
-<!-- Cauchy(0,1) prior. It's easy enough to do in Stan: -->
+If we fit this model supplying data $y=1$, 2000 iterations and 4 chains, and then from the resulting
+simulations compute the posterior probability that $\theta > 0$, we
+get 0.77, that is, roughly a 3:1 posterior probability that the effect
+is positive.
 
-<!-- ``` -->
-<!-- data { -->
-<!--   real y; -->
-<!-- } -->
-<!-- parameters { -->
-<!--   real theta; -->
-<!-- } -->
-<!-- model { -->
-<!--   theta ~ cauchy (0, 1); -->
-<!--   y ~ normal(theta, 1); -->
-<!-- } -->
-<!-- ``` -->
+Just to check that we're not missing anything, let's re-run using the
+flat prior. New Stan model:
 
-<!-- If we fit this model supplying data $y=1$, and then from the resulting -->
-<!-- simulations compute the posterior probability that $\theta > 0$, we -->
-<!-- get 0.77, that is, roughly a 3:1 posterior probability that the effect -->
-<!-- is positive. -->
+```
+data {
+  real y;
+}
+parameters {
+  real theta;
+}
+model {
+  y ~ normal (theta, 1);
+}
+```
+and re-run with the same R code. This time, indeed, 84% of the posterior simulations of $\theta$ are greater than 0.
 
-<!-- Just to check that we're not missing anything, let's re-run using the -->
-<!-- flat prior. New Stan model: -->
+So far so good. Although one might argue that the posterior probability of 0.77 (from the inference given the unit Cauchy prior) is still too high. Perhaps we want a stronger prior? This sort of discussion is just fine. If you look at your posterior inference and it doesn't make sense to you, this "doesn't make sense" corresponds to additional prior information you haven't included in your analysis.
 
-<!-- ``` -->
-<!-- data { -->
-<!--   real y; -->
-<!-- } -->
-<!-- parameters { -->
-<!--   real theta; -->
-<!-- } -->
-<!-- model { -->
-<!--   y ~ normal (theta, 1); -->
-<!-- } -->
-<!-- ``` -->
-<!-- and re-run with the same R code. This time, indeed, 84% of the posterior simulations of $\theta$ are greater than 0. -->
+OK, so that's one way to consider the unreasonableness of a noninformative prior in this setting. It's not so reasonable to believe that effects are equally likely to be any size. They're generally more likely to be near zero.
 
-<!-- So far so good. Although one might argue that the posterior probability of 0.77 (from the inference given the unit Cauchy prior) is still too high. Perhaps we want a stronger prior? This sort of discussion is just fine. If you look at your posterior inference and it doesn't make sense to you, this "doesn't make sense" corresponds to additional prior information you haven't included in your analysis. -->
+The other way to see what's going on with this example is to take that flat prior seriously. Suppose theta really could be just about anything---or, to keep things finite, suppose you wanted to assign theta a uniform prior distribution on $[-1000,1000]$, and then you gather enough data to estimate $\theta$ with a standard deviation of 1. Then, a priori, you're nearly certain to gather very very strong information about the sign of $\theta$. To start with, there's a 0.998 chance that your estimate will be more than 2 standard errors away from zero so that your posterior odds about the sign of $\theta$ will be at least 20-to-1. And there's a 0.995 chance that your estimate will be more than 5 standard errors away from zero.
 
-<!-- OK, so that's one way to consider the unreasonableness of a noninformative prior in this setting. It's not so reasonable to believe that effects are equally likely to be any size. They're generally more likely to be near zero. -->
+So, in your prior distribution, this particular event---that $y$ is so close to zero that there is uncertainty about $\theta$'s sign---is extremely unlikely. And it would be irrelevant that $y$ is not statistically significantly different from 0.
 
-<!-- The other way to see what's going on with this example is to take that flat prior seriously. Suppose theta really could be just about anything---or, to keep things finite, suppose you wanted to assign theta a uniform prior distribution on $[-1000,1000]$, and then you gather enough data to estimate $\theta$ with a standard deviation of 1. Then, a priori, you're nearly certain to gather very very strong information about the sign of $\theta$. To start with, there's a 0.998 chance that your estimate will be more than 2 standard errors away from zero so that your posterior odds about the sign of $\theta$ will be at least 20-to-1. And there's a 0.995 chance that your estimate will be more than 5 standard errors away from zero. -->
+Modeling can be difficult. In some settings the data are strong and prior information is weak, and it's not really worth the effort to think seriously about what external knowledge we have about the system being studied. Often, though, we do know a lot, and we're interested in various questions where data are sparse, and we could be putting more effort into quantifying our prior distribution.
 
-<!-- So, in your prior distribution, this particular event---that $y$ is so close to zero that there is uncertainty about $\theta$'s sign---is extremely unlikely. And it would be irrelevant that $y$ is not statistically significantly different from 0. -->
-
-<!-- Modeling can be difficult. In some settings the data are strong and prior information is weak, and it's not really worth the effort to think seriously about what external knowledge we have about the system being studied. Often, though, we do know a lot, and we're interested in various questions where data are sparse, and we could be putting more effort into quantifying our prior distribution. -->
-
-<!-- Upsetting situations---for example, the estimate of $1 \pm 1$ which leads to a seemingly too-strong claim of 5-to-1 odds in favor of a positive effect---are helpful in that they can reveal that we have prior information that we have not yet included in our models. -->
+Upsetting situations---for example, the estimate of $1 \pm 1$ which leads to a seemingly too-strong claim of 5-to-1 odds in favor of a positive effect---are helpful in that they can reveal that we have prior information that we have not yet included in our models.
 
 
 
