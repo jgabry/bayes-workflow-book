@@ -1,42 +1,19 @@
 # Prior Distributions and Models for Data
-what is a prior?, how does it combine with data?, what are types of priors?, what is the role of the likelihood?, problems with non informative priors and other examples
+In this chapter we explain in some detail what a prior distribution is and how it relates to the likelihood and in turn how the prior and likelihood combine to express the posterior distribution of a parameter. We provide some examples to contextualize how the prior actually works and how much influence it can have on the model building process. We also explain the various types of priors that you can use based on the problem you are trying to model or solve. 
+
 
 ## The role of the prior distribution [Gelman, Simpson, Betancourt 2017]
 The prior distribution in Bayesian analysis fulfills many different purposes. The prior distribution contains information that is relevant to the problem under consideration. For example if your parameter of interest is a proportion or a probability, you know it has to be between 0 and $1$. The prior can encode this information that is known "apriori", i.e before designing an experiment or engaging with data. In the world of Stan and the practical estimation of Bayesian models it takes on another role by regularizing or constraining the possible parameter space. This helps with drawing inferences in high-dimensional problems. 
 
-## Priors {#general-priors.section}
-
-The prior only matters where the likelihood is nonzero (and vice-versa). The choice of prior depends on the problem at hand and we discuss prior choice more fully on the [prior choice wiki page](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations).
-
-We consider 5 levels of priors:
-
-- Flat prior;
-
-- Super-vague but proper prior: normal(0, 1e6);
-
-- Weakly informative prior, very weak: normal(0, 10);
-
-- Generic weakly informative prior: normal(0, 1);
-
-- Specific informative prior: normal(0.4, 0.2) or whatever. Sometimes this can be expressed as a scaling followed by a generic prior: theta = 0.4 + 0.2*z; z ~ normal(0, 1);
-
-In Stan, if you don't supply any prior at all, you are implicitly using a flat prior.  In general we don't recommend this, but for many cases in this book, such as the Hello World example in Chapter 1, we use flat priors for simplicity and because we are focusing on the expression of the data model or likelihood.
-
-Setting up priors goes along with setting up the model.  You want to set up your parameters so they are understandable, and then you will typically have some sense of their possible range, and you can use this to set up priors.  If you have a lot of data, the prior won't matter much, but there are lots of real examples where data are weak and it it is helpful to use an informative prior.
-
-### Background Reading {-}
-
-See @Gelman:2006 for an overview of choices for priors for
-scale parameters, @ChungEtAl:2013 for an overview of choices
-for scale priors in penalized maximum likelihood estimates, and
-@GelmanJakulinPittauEtAl:2008 for a discussion of prior choice
-for regression coefficients.
-
-
-
 ## Prior, likelihood, posterior densities; Bayes as information aggregation
 
-As discussed in the context of the Hello World example in chapter 1, a
+- It is important to begin by understanding how the prior and likelihood combine to yield the posterior. Unsurprisingly, Bayes' rule plays a pivotal role in Bayesian inference! The prior and likelihood distributions are combined using Bayes' rule and this gives us the posterior distribution. Say $\theta$ is your parameter of interest and $y$ is the data that you have. Bayesian inference is essentially concerned with learning about unknown or unobservable quantities using known or empirically observed quantities. In this case our data $y$ is observed but our parameter $\theta$ is the quantity of interest which is unknown. Researchers though, generally tend to have some prior knowledge about $\theta$. For example if $\theta$ is a probability or proportion, then you know it has to be between 0 and 1. On the other hand if $\theta$ is the average height of a population you know it can't be negative, or for that matter $+\infty$. This prior knowledge is embedded in the distribution $p(\theta)$, also called the prior distribution. The likelihood distribution is the probability of the data conditional on the parameter $\theta$. Essentially using Bayes rule with a given probability model means that the data $y$ affect the posterior distribution only through the likelihood function $p(y|\theta)$ (cite BDA3 page 7-8). The prior and likelihood are multiplied to obtain the numerator of the expression on the RHS below. The denominator is often called the normalizing constant and it is usually extremely difficult or impossible to compute this integral. So we drop the normalizing constant and are able to obtain a distribution that is proportional to the posterior by considering only the numerator (i.e $p(\theta).p(y|\theta)$.
+
+$$p(\theta|y) = \frac{p(\theta)  p(y|\theta)}{\int_{\theta} p(\theta)  p(y|\theta)}$$
+
+$p(\theta|y)$ denotes the Bayesian posterior distribution of the parameter $\theta$. It can be interpreted as the probability distribution of the parameter conditional on the data.
+
+- As discussed in the context of the Hello World example in chapter 1, a
 Stan model is constructed by adding to the objective function or
 log-posterior density; each line in the model block with "target +="
 or a "~" symbol adds a term.  The increments can come in any order, as
@@ -135,15 +112,47 @@ as it just looks confusing.  But understanding how it works gives
 insight into the way that priors and data combine to express
 information.
 
-
-## [REVISIT] Concentration of the likelihood
-
+## Concentration of the likelihood
 For any fixed model, as the sample size increases, the likelihood
 becomes more informative.  This can be seen, for example, in the
 models above, where each additional data point adds another term to
 the likelihood in the implicit vector addition of the `target +=` or
 `~` statement.  See Chapter 4 of _Bayesian Data Analysis_ for more on
 this.
+
+```{r}
+print(seq(1,10))
+```
+
+## Priors {#general-priors.section}
+
+The prior only matters where the likelihood is nonzero (and vice-versa). The choice of prior depends on the problem at hand and we discuss prior choice more fully on the [prior choice wiki page](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations).
+
+We consider 5 levels of priors:
+
+- Flat prior;
+
+- Super-vague but proper prior: normal(0, 1e6);
+
+- Weakly informative prior, very weak: normal(0, 10);
+
+- Generic weakly informative prior: normal(0, 1);
+
+- Specific informative prior: normal(0.4, 0.2) or whatever. Sometimes this can be expressed as a scaling followed by a generic prior: theta = 0.4 + 0.2*z; z ~ normal(0, 1);
+
+In Stan, if you don't supply any prior at all, you are implicitly using a flat prior.  In general we don't recommend this, but for many cases in this book, such as the Hello World example in Chapter 1, we use flat priors for simplicity and because we are focusing on the expression of the data model or likelihood.
+
+Setting up priors goes along with setting up the model.  You want to set up your parameters so they are understandable, and then you will typically have some sense of their possible range, and you can use this to set up priors.  If you have a lot of data, the prior won't matter much, but there are lots of real examples where data are weak and it it is helpful to use an informative prior.
+
+### Background Reading {-}
+
+See @Gelman:2006 for an overview of choices for priors for
+scale parameters, @ChungEtAl:2013 for an overview of choices
+for scale priors in penalized maximum likelihood estimates, and
+@GelmanJakulinPittauEtAl:2008 for a discussion of prior choice
+for regression coefficients.
+
+
 
 ## Problems with so-called noninformative priors [objective - Prior information not included in models!]
 
