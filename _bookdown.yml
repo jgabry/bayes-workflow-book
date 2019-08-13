@@ -6,7 +6,7 @@ rmd_files: [
 
   "part1.Rmd",
   "introduction.Rmd",
-  "fake-data.Rmd",
+  "simulated-data.Rmd",
   "prior-data-models.Rmd",
   "simple-examples.Rmd",
   "workflow.Rmd",
