@@ -1,0 +1,177 @@
+# How to Get the Most Out of BDA3
+
+Our thinking about Bayesian statistics is summarized in the book Bayesian Data Analysis, third edition (BDA3) by Gelman, Carlin, Stern, Dunson, Vehtari, and Rubin.  A similar perspective is presented more concisely in the book Statistical Rethinking: A Bayesian Course with Examples in R and Stan by McElreath.
+
+There is no point in repeating the material in BDA3 here.  Instead we go through it, chapter by chapter, pointing out the parts that should be most helpful for learning Bayesian workflow using Stan.  Then we list some important topics that _should_ be in BDA3 but are not there.
+
+## BDA3 chapter 1:  Probability and inference {-}
+
+You should read this chapter if for no other reason than to overwrite various misconceptions you might have about probability and Bayesian inference.
+
+The necessary sections in chapter 1 for you to read:
+
+* Overview:  section 1.1.
+
+* Spelling correction example:  part of section 1.4, just pages 9-11.  We work out the mechanics of Bayesian analysis for a discrete problem (three possibilities) and then discuss extensions of the model.  This follows our general template of model building, inferece, and expansion.
+
+* Foundations of probability, our pragmatic perspective:  section 1.5.
+
+If you want to get more into Bayesian philosophy, we recommend these two articles:
+Gelman and Shalizi, Philosophy and the practice of Bayesian statistics (http://www.stat.columbia.edu/~gelman/research/published/philosophy.pdf) or shorter version here: http://www.stat.columbia.edu/~gelman/research/published/philosophy_online4.pdf),
+Gelman and Hennig, Beyond subjective and objective in statistics (http://www.stat.columbia.edu/~gelman/research/published/gelman_hennig_full_discussion.pdf)
+
+## BDA3 chapters 2 and 3:  Single-parameter models and Introduction to multiparameter models {-}
+
+Now that we have Stan we can fit complicated models all at once.  But back in the early 1990s when we were writing BDA, each parameter represented an effort, and we worked as much as possible with ``conjugate priors'':  models where the posterior distribution can be written analytically.
+
+At this point, chapters 2 and 3 can be mostly thought of as reference materials, where we derive various standard analytic results.
+
+The necessary sections in chapters 2 and 3 for you to read:
+
+* Posterior as compromise between data and prior:  section 2.2.
+
+* Prior-posterior calculations with the normal distribution:  section 2.5.  You don't really need to know this stuff, but it's good to know where the derivation is, so you can see how such analyses are performed.
+
+* Partial pooling for estimating the rats of a rare cancer:  section 2.7.  This is one of our favorite examples.  The only thing is, don't obsess about how the posterior distribution is estimated from the data.  When this section was written, it simplest to fit this distribution using the method of moments, matching the mean and variance of the empirical distribution of cancer rates to their expectations under the model.  This introduces lots of complications, and it's much easier just to fit the model directly in Stan.  Set aside the details of fitting, though, and it's an excellent example.  One thing we like about it is that it demonstrates the role of the prior distribution and data, through a model with data from 3000 counties but a single prior distribution.
+
+* Weakly informative priors:  section 2.9.  Our thinking has advanced since this section was written (see the Prior Choice Wiki), but this is still a good two-page introduction.
+
+* Averaging over parameters:  section 3.1.  The math in this short section isn't so relevant, but the general idea expressed here could be useful when thinking about multidimensional distributions.
+
+* Simple logistic regression:  section 3.7.  This is a good simple example going through detailed steps of model building, computation, and inferential summary--not including model checking and expansion because this particular dataset is so small that there's nothing much to check. The only thing that's missing is a graph of data and fitted model, but that's something you can do as an exercise.  In this example we use old-fashioned computation, but it's simple summning over a grid, no mathematical integrals to worry about.  We recommend that you go to the trouble of understanding this computation, even though in future you'll be fitting this sort of model in Stan.
+
+## BDA3 chapter 4:  Asymptotics and connections to non-Bayesian approaches {-}
+
+The asymptotic normality of the posterior distribution is something that used to be more important, back when a common method of summarizing a posterior was to compute its mean and curvature.  That said, these ideas are still important for several reasons:
+
+* It can be helpful to understand what happens to Bayesian inferences as more data arrive--while also recognizing where asymptotic approximations fail.
+
+* You will often encounter approximate or non-Bayesian computations--estimates, standard errors, hypothesis tests--and you'll want to know how to integrate these into Bayesian thinking.
+
+* Nowadays it is rare that we would approximate a posterior distribution by posterior mode and uncertainty, but this approach can be useful as a building block for complicated problems, as we discuss in chapter 13 on modal and distributional approximations.
+
+The necesasary sections in chapter 4 for you to read:
+
+* Large-sample theory:  section 4.2.  Read the whole section if you can easily follow the math; otherwise skip any tricky notation and just read the words.  Don't get us wrong here:  we _do_ believe this math is important.  It's just not something to worry about when getting started.  Later on you can go back and learn it as needed.  It's similar to how you don't need to have much understanding of physics to drive a car, but if you want to start tinkering with your car, or building a new one, you'll want to know more.
+
+* Counterexamples to large-sample results:  section 4.3.  Read this whole section carefully, _including all the math_.  The examples here are important.
+
+* Bayesian interpretations of other statistical methods:  section 4.5.  You'll need to know this too.
+
+## BDA3 chapter 5:  Hierarchical models {-}
+
+In simple Bayesian inference, there is a fixed prior representing specific information about a parameter (for example, theta ~ normal(4.3, 1.2)) and a fixed data model giving additiona information about theta, and these are combined to yield posterior inference.  One of the stumbling blocks here is that we don't always feel comfortable specifying a precise numerical prior, but we do have relevant prior information
+
+The necesasary sections in chapter 5 for you to read:
+
+* Estimating a prior distribution from data:  section 5.1.  This presents the basic idaa.  In this example the hyperparameters are estimated using the method of moments, and we would not recommend that now--indeed, it's a bit of a distraction in the exposition--so we recommend you redo the example yourself using Stan.  Still read the whole section, though.
+
+* Estimating treatment effects in eight schools:  section 5.5.  The discussion and graphs surrounding this classic example are still very much worth reading.
+
+* Hierarchical modeling for a meta-analysis:  section 5.6.  This section is not necessary but you can read it if you want to see another worked example.
+
+* Priors for hierarchical variance parameters:  section 5.7.  Our thinking has advanced somewhat since this section was written, but it's still a good starting point for thinking about hyperprior distributions in complex models.
+
+## BDA3 chapter 6:  Model checking {-}
+
+Chapters 6, 7, 8, and 9 are key chapters in BDA3 because they go beyond Bayesian _inference_ (learning through a particular model) to aspects of Bayesian _workflow_ (evaluating and using models).
+
+The necesasary sections in chapter 6 for you to read:
+
+* Overview of Bayesian model checking:  section 6.1.
+
+* Comparing fitted models to other knowledge:  section 6.2.
+
+* Posterior predictive checking:  part of section 6.3, just pages 143-144, but then you can skip the rest of the section which is mostly about p-values, which we don't recommend any more.
+
+* Graphical posterior predictive checks:  section 6.4.  Several examples here, each illustrating different principles.
+
+* Model checking for eight schools example:  section 6.5.  This is valuable not so much for the graphs and p-values, which don't show much, but for the discussion of the modeling assumptions and how they can be checked from data.
+
+## BDA3 chapter 7:  Evaluating, comparing, and expanding models {-}
+
+This chapter is fairly theoretical, as it represented our best effort to understand predictive-based model evaluation.  The key idea is that when evaluating or comparing models in this way, we are not interested in the posterior probability of the model but rather in how well it predicts.  Thus, a model can perform well for some purposes but not for others.
+
+For practical purposes, we recommend this article published in 2017 that gives theory, Stan implementation, and several examples of predictive model evaluation and comparison: http://www.stat.columbia.edu/~gelman/research/published/loo_stan.pdf.  That said, chapter 7 of BDA3 may be useful in that it presents the key ideas in compact form.
+
+The necesasary sections in chapter 7 for you to read:
+
+* Measures of predictive accuracy:  section 7.1.  This has some algebra, but it's algebra that any serious Bayesian modeler or Stan user should know, involving the logarithm of the posterior density function (the target or objective function in a Stan model).
+
+* Information criteria:  section 7.2.  You'll need to read this section if you want to understand the connections between cross validation, AIC, BIC, and other information scores that adjust for effective number of paramters in a fitted model. Feel free to skip the details here unless you really care about all these different methods, but there are lots of interesting theoretical ideas here.
+
+* Bayes factors and continuous model expansion:  sections 7.4 and 7.5.  We don't recommend Bayes factors for model comparsion; instead we prefer continuous model expansion.  These sections explain why.
+
+* Example of implicit assumptions and model failure:  section 7.6.  You can skip this self-contained case study, but we recommend you read it if you have the time, as it's a simple example of how a reasonable-seeming model can go wrong, how this problem can be found using predictive checking.  This example is also valuable because it demonstrates that a statistical procedure applied to a particular class of problems can include implicit assumptions--and when these assumptions are made explicit, they can improve the model.
+
+## BDA3 chapter 8:  Modeling accounting for data collection {-}
+
+In this theoretically-oriented chapter, we work out some of the implications of Bayesian inference in sampling, causal inference, and selection:  all contexts where the model is fit to data that are not necessarily representative of the population that is the target of study.  The key idea is to include in the Bayesian model an ``inclusion'' variable with a probability distribution that represents the process by which data become observed.
+
+The necesasary sections in chapter 8 for you to read:
+
+* General framework for Bayesian modeling accounting for for data collection:  section 8.1.
+
+* Randomization in Bayesian inference:  section 8.5.
+
+* Observational studies: part of section 8.6, just pages 220-222.
+
+* Censoring and truncation:  section 8.7.  You can skip this section for now, but it will be useful if you want to work with data that have selection issues.
+
+* Summary of when you can ignore details of the data collection process:  section 8.8.
+
+The other parts of chapter 8 have interesting material, but you don't need them to get started.
+
+## BDA3 chapter 9:  Decision analysis {-}
+
+The necesasary sections in chapter 9 for you to read:
+
+* Bayesian decision theory:  section 9.1.
+
+* Personal vs. institutional decision analysis:  section 9.5.
+
+The other sections are fine too; they're just pretty detailed examples.  It would be good to have a simpler but still real example to demonstrate decision analysis within Bayesian workflow.
+
+## BDA3 chapter 10:  Introduction to Bayesian computation {-}
+
+The necesasary sections in chapter 10 for you to read:
+
+* Rejection sampling:  section 10.3.  You may never use this in a real problem, but this simple method illustrates some general principles, so it's worth reading this section carefully and programming up the example yourself in R or Python.
+
+* How many simulation draws are needed:  section 10.5.
+
+* Debugging Bayesian computing:  section 10.7.  This short section is worth reading, even though the present book updates much of this advice.
+
+## BDA3 chapter 11:  Basics of Markov chain simulation {-}
+
+## BDA3 chapter 12:  Computationally efficient Markov chain simulation {-}
+
+## BDA3 chapter 13:  Modal and distributional approximations {-}
+
+## BDA3 chapter 14:  Introduction to regression models {-}
+
+## BDA3 chapter 15:  Hierarchical linear models {-}
+
+## BDA3 chapter 16:  Generalized linear models {-}
+
+## BDA3 chapter 17:  Models for robust inference {-}
+
+## BDA3 chapter 18:  Models for missing data {-}
+
+## BDA3 chapter 19:  Parametric nonlinear models {-}
+
+## BDA3 chapter 20:  Basis function models {-}
+
+## BDA3 chapter 21:  Gaussian process models {-}
+
+## BDA3 chapter 22:  Finite mixture models {-}
+
+## BDA3 chapter 23:  Dirichlet process models {-}
+
+
+## BDA3 appendix A:  Standard probability distributions {-}
+
+## BDA3 appendix B:  Outline of proofs of limit theorems {-}
+
+## BDA3 appendix C:  Computation in R and Stan {-}
+

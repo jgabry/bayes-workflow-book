@@ -1,0 +1,16 @@
+# Evalutation and Visualization
+
+Data analysis workflow has three steps:
+
+1.  Model building---or, more generally, constructing methods for 
+
+R-hat, divergences, Bayesplot, loo, stacking, etc.
+
+## Case study on robust Bayesian workflow
+
+https://mc-stan.org/users/documentation/case-studies/rstan_workflow.html
+
+## Case study on the divergence diagnostic
+
+https://mc-stan.org/users/documentation/case-studies/divergences_and_bias.html
+

@@ -1,0 +1,13 @@
+# What's Missing from BDA3
+
+Organize this list roughly in order of topics in the BDA book
+
+* Scaling of parameters and data
+
+* Iterative nature of model building; components of models as placeholders
+
+* Weakly informative priors
+
+* Simulation-based checking as a way of life
+
+* PSIS

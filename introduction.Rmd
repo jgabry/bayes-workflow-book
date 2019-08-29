@@ -1,5 +1,16 @@
 # Introduction
 
+## Beyond Bayes:  The Big Picture
+
+We're aiming this book at three sorts of readers:
+
+* Want to learn and use Bayesian inference, have heard that Stan is a good way to do this
+
+* Already using Bayes or Stan, want to use more effectively
+
+* Want to learn and use applied statistics and machine learning; Bayes is just part of the big picture.
+
+
 ## Bayesian Data Analysis
 
 ### Bayesian inference and Stan {-}
