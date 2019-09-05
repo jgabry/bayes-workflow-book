@@ -62,14 +62,14 @@ Mathematica, and command line).
 Stan is an open-source software project, resources for which are
 hosted on various web sites:
 
-* The [Stan Web Site](http://mc-stan.org/) organizes all of the resources
+* The [Stan Web Site](https://mc-stan.org/) organizes all of the resources
 for the Stan project for users and developers.  It contains links to
 the official Stan releases, source code, installation instructions,
 and full documentation, including the latest version of this manual,
 the user's guide and the getting started guide for each interface,
 tutorials, case studies, and reference materials for developers.
 
-* The [Stan Forums](http://discourse.mc-stan.org) provide structured
+* The [Stan Forums](https://discourse.mc-stan.org) provide structured
 message boards for questions, discussion, and announcements related to
 Stan for both users and developers.
 
