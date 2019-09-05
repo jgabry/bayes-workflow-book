@@ -10,7 +10,6 @@ We're aiming this book at three sorts of readers:
 
 * Want to learn and use applied statistics and machine learning; Bayes is just part of the big picture.
 
-
 ## Bayesian Data Analysis
 
 ### Bayesian inference and Stan {-}
@@ -111,15 +110,6 @@ https://github.com/stan-dev/stancon_talks.
 
 ## Hello World
 
-_Bayesian inference_ is a framework for estimating parameters and
-constructing predictions given probability models and data.  _Bayesian
-data analysis_ is the larger process of building, fitting, and
-checking probability models.  _Stan_ is an open-source computer
-program for Bayesian inference and simulation.  Stan can be run from
-R, Python, Julia, or other scientific/statistical software.  In the
-examples in this book, we set up data and run Stan from R, but our
-focus is on Stan, not the R code.
-
 ### Getting started {-}
 
 Go to the Stan webpage (http://mc-stan.org) and navigate to users and
@@ -130,13 +120,13 @@ steps on that page.
 ### A Stan program for simple linear regression {-}
 
 Our "Hello World" example is a linear regression,
-$$y_i=a+bx_i +\mbox{error}_i, \mbox{ for } i=1,\dots,N,$$ with errors
+y_i=a+bx_i + error_i, for i=1,...,N, with errors
 independent and normally distributed with mean 0 and standard
-deviation $\sigma$.
+deviation sigma.
 
 Just one little thing to be careful of: in statistical notation, the
 normal distribution with mean $\mu$ and standard deviation $\sigma$ is
-written as $N(\mu,\sigma^2)$.  In Stan, we write it as `normal(mu,
+written as N(mu,sigma^2).  In Stan, we write it as `normal(mu,
 sigma)` (_not_ `sigma^2`).
 Also, note that when we are talking about the elements of a Stan program
 we use `typewriter font` and when we are talking about the elements
@@ -169,9 +159,9 @@ N <- 100
 a <- 10
 b <- 4
 sigma <- 5
-x <- runif(N, 0, 10)
-y <- rnorm(N, a + b*x, sigma)
-hello_data <- list(N=N, x=x, y=y)
+x0 <- runif(N, 0, 10)
+y0 <- rnorm(N, a + b*x0, sigma)
+hello_data <- list(N=N, x=x0, y=y0)
 ```
 
 The last statement creates a single R data structure `hello_data`
@@ -411,11 +401,11 @@ tilde.
 That is, the objective function is interpreted as being the log
 posterior density of the parameters, plus some arbitrary constant.
 Mathematically, if the objective function computed by Stan is
-$g(\theta,y)$, then the implied posterior density is
-$p(\theta|y)=\frac{1}{Z(y)}e^{g(\theta,y)}$, where $Z(y)=\int
+g(theta,y), then the implied posterior density is
+p(theta|y)=(1/Z(y))*exp(g(theta,y)), where $Z(y)=\int
 g(\theta,y)d\theta$.  To perform inference using this posterior
-distribution, is not necessary to actually evaluate the integral $Z$;
-it is enough to be able to compute $g$.
+distribution, is not necessary to actually evaluate the integral Z;
+it is enough to be able to compute g.
 
 ### Stan's fitting algorithms {-}
 
@@ -615,8 +605,8 @@ into _blocks_:
   for the program to run.  For example, in a regression model, the
   data would be x, y, and N.  Each data object in a Stan program must
   be given a type, such as int (integer), real, vector, matrix, etc.
-  Explanations of all the types are in chapter on
-  [matrices, vectors, and arrays](#matrices-vectors-and-arrays) of this book.
+  Explanations of all the types are in the chapter on
+  [matrices, vectors, and arrays](#matrices-vectors-and-arrays) of the Stan manual.
 
 - Transformed data.  These are mathematical operations that are
   performed once when the Stan program is called.
@@ -625,7 +615,7 @@ into _blocks_:
   when the Stan program is run.  Parameters also need to be declared,
   and they need to be continuous.  You cannot have an integer-valued
   parameter.  See the [latent discrete parameters](#latent-discrete.chapter)
-  chapter for further discussion of this point.
+  chapter of the Stan manual for further discussion of this point.
 
 - Transformed parameters.  Computations that depend on parameters as
   well as data, thus must be computed in each step when Stan runs.
@@ -651,9 +641,9 @@ matrix of predictors and then run from R:
 
 ```{r ex-vector-cmd,  echo=TRUE, eval=FALSE}
 ones <- rep(1, N)
-X <- cbind(ones, x)
+X0 <- cbind(ones, x0)
 K <- 2
-data_3 <- list(N=N, K=K, X=X, y=y)
+data_3 <- list(N=N, K=K, X=X0, y=y)
 fit_3 <- stan("stan/vector-regression.stan", data=data_3)
 ```
 ```{r ex-vector-do,  include=FALSE}
@@ -771,7 +761,7 @@ well, using Stan.  Other software has problems with such models too.
 In any case, if you want to perform Bayesian inference for a model
 with discrete unknowns, you need to either average over the discrete
 variables as described in
-the [latent discrete parameters](#latent-discrete.chapter) chapter,
+the [latent discrete parameters](#latent-discrete.chapter) chapter of the Stan manual,
 or fit the model outside of Stan.  Either way, we recommend fake-data
 simulation to check that the
 fit can recover the parameter values under reasonable assumptions.
@@ -786,7 +776,7 @@ fit can recover the parameter values under reasonable assumptions.
   include continuous models with discrete aspects to their geometry,
   such as multimodal posterior distributions.  Sometimes we can get
   these models to run more smoothly by reparameterizing; see the
-  [optimization](#optimization.chapter) chapter of this book
+  [optimization](#optimization.chapter) chapter of the Stan manual
   for the important example of the use of the
   non-centered parameterization to avoid the "funnel problem" with
   hierarchical models.
@@ -794,36 +784,10 @@ fit can recover the parameter values under reasonable assumptions.
 - Models for which the objective function takes a long time to
   compute.  This includes some models with differential equations (see
   the [ordinary differential equations](#ode-solver.chapter)
-  chapter) or even simple models, if the size of the data or the
+  chapter of the Stan manual) or even simple models, if the size of the data or the
   number of parameters is large enough.  There are various approaches
   to managing large and slow computations in Stan, including data
   subsetting, and posterior approximations, and parallel computing.
   For most of this book we focus on small and moderate-sized problems;
   we discuss big-data strategies in the [map-reduce](#map-reduce.chapter)
-  chapter.
-
-
-## More information about Bayesian data analysis and Stan
-
-Here is a list of resources, roughly in order from most to least
-formal:
-
-- The Stan Reference Manual:
-  http://mc-stan.org/users/documentation/index.html which has details
-  on the algorithms and implementations used by Stan, along with all
-  of Stan's functions.
-
-- _Bayesian Data Analysis_ by Gelman, Carlin, Stern, Dunson, Vehtari,
-  and Rubin (third edition, 2014)
-
-- _Statistical Rethinking: A Bayesian Course with Examples in R and
-  Stan_ by McElreath (2015)
-
-- _Regression and Other Stories_ by Gelman, Hill, and Vehtari
-  (forthcoming)
-
-- Stan case studies:
-  http://mc-stan.org/users/documentation/case-studies.html and
-  https://github.com/stan-dev/stancon_talks
-
-- Stan Discourse list: https://discourse.mc-stan.org
+  chapter of the Stan manual.

@@ -7,10 +7,5 @@ Here are some standard models that we demonstrate using the following template:
 - Fit the model in Stan.
 - Compare fitted model to assumed parameter values.
 
-This chapter is intended to supplement the Example Models chapters in the Stan Users Guide, which present and explain Stan code for various classes of models, but without the code in R for simulating data and running Stan.
+Our intention is to replace this chapter with "footnotes" in the Stan User's Guide.  The User's Guide presents and explain Stan code for various classes of models, but without the code in R for simulating data and running Stan.  These footnotes will contain runnable examples as structured above.
 
-## Linear regression
-
-## Hierarchical model
-
-## Mixture model

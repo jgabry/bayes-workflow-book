@@ -5,8 +5,8 @@ data {
   int<lower=1, upper=J> movie[N];
 }
 parameters {
-  vector<lower=0, upper=5>[J] theta;
-  real<lower=0, upper=2.5> sigma_y;
+  vector[J] theta;
+  real<lower=0> sigma_y;
 }
 model {
   theta ~ normal(3, 1);

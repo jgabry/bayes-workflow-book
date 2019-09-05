@@ -1,9 +1,9 @@
 # Simulating Data
 
-The initial stage of model checking consists of using simulated data
-to fit the model and then comparing the posterior distribution of the
+A key step in model validation is to use simulated data
+to fit the model and then compare the posterior distribution of the
 estimated parameters with the parameter values used in the simulation.
-This procedure diagnoses problems which arise from the Stan language
+This procedure diagnoses problems which arise from the Stan 
 program, i.e., the implementation of the model.
 Models which are programmatically correct may fail to fit real data
 because a model is only an approximation of the true data-generating process
@@ -38,7 +38,7 @@ The variables in this model are:
 
 * modeled data `y` (vector of length N; the outcome in the regression)
 
-### Step 1:  Unmodeled data {-}
+#### Step 1:  Unmodeled data {-}
 
 We set $N = 50$.
 
@@ -46,7 +46,7 @@ We set $x$ by sampling $N$ independent values uniformly distributed between 0 an
 
 The above choices are arbitrary.  In general we would want the values to make sense in some context.  For that reason we often want a "cover story" for our simulation.  For example, x and y could be test scores for a class of N students at the beginning and end of the semester, so the regression model predicts final score from initial score.  In this example, there are 50 students in the class, and the scores on the initial exam range from 0 to 50.
 
-### Step 2:  Parameters {-}
+#### Step 2:  Parameters {-}
 
 There are two options for creating parameters in a simulation study:  drawing from the prior distribution or setting to particular values.
 
@@ -73,7 +73,7 @@ In our regression example we have flat priors and so we set the parameters to wh
 
 We often do this with hierarchical models, picking values for hyperparameters and then drawing intermediate-level parameters from their prior, conditional on the chosen hyperparameters.  We shall illustrate below with the 8 schools example.
 
-### Step 3:  Modeled data {-}
+#### Step 3:  Modeled data {-}
 
 The next step is to draw y from p(y|theta,x).  In our regression example, we sample y_n, n=1,...,N independently with means a + b*x_n and standard deviation sigma.
 
@@ -81,7 +81,7 @@ The next step is to draw y from p(y|theta,x).  In our regression example, we sam
 
 These above steps can all be done in R:
 
-```{r}
+```{r, echo=TRUE}
 N <- 100
 a <- 2
 b <- 3
@@ -234,10 +234,30 @@ print(c(mu_a, tau_a, eta_a))
 ```
 Ideally this would be done as a pre-coded function.
 
-## Topics in simulating data
+## Challenges
 
-We will expand upon these topics:
+What we demonstrated in this chapter can be considered a crude version of simulation-based calibration. You should not in general expect intervals to have their nominal coverage, given that: (a) in many cases we are setting parameters to fixed values rather than drawing from the prior distribution, and (b) in any case, we just do one simulation.
 
-- When choosing assumed parameter values can give a bad answer (if they're in the tail of the prior)
+Nonetheless, in many cases we can learn from a simple one-shot simulation check.  Sometimes the posterior inferences line up to the assumed parameter values, and we feel a bit more confidence about our fitting procedure; other times the fit isn't even close, and we've discovered some major bug. 
 
-- What to do when simulating data gives a bad answer, if the model cannot recover the assumed parameter values?
+When a simulation check reveals a problem, we need to go back and figure out what went wrong. It could be a typo in the Stan program, a mislabeling of variables, an omission from the model, or even a problem with the R or Stan program we use to simulate the data.
+
+If you can't find the problem, the next step is to simplify the model, to go backward until you have a model you can trust, and then add complexities one at a time, performing simulation-based validation at each step.
+
+#### Posterior geometry can depend on data (and thus, indirectly, on assumed parameter values) {-}
+
+Model space can be big.  For a simple model such as linear regression with uniform prior, it doesn't really matter what are your assumed parameter values; you should be able to reconstruct them from data.  More generally, though, a model looks different for different parameter values.
+
+For example, in a mixture model, if the underlying components are well separated, then it should be relatively easy to distinguish them from data, but if there is a lot of overlap, the inferential challenge is greater.  On one hand, this implies that if we want to check the ability of a Stan program to fit a model, we should consider all sorts of possibilities for the assumed underlying parameters.  Looking at it another way, what is important is that we can fit the model in settings corresponding to parameter values that are realistic in the context of the application of interest.
+
+For another example, predictive distributions for discrete-data models can depend strongly on parameter values.  For a simple example, consider a logistic regression, $y_i = \mbox{logit}^{-1}(a + bx_i)$, for $i=1,...,100$, with predictor values $x_i$ that fall in the range (-1,1).  If the parameters $a$ and $b$ are near 0 or 1 in absolute value, fine.  But if $a=10$ and $b=0.1$, then the data will almost certainly all be 1's, thus inference will depend strongly on the prior.  That should be fine, but it's a different sort of posterior geometry than would arise from logistic regression with a mix of 0's and 1's.
+
+#### What parameter values to choose? {-}
+
+If we can draw all parameters from the prior, that eliminates all choice from the predictive simulation.  However sometimes we can't draw from the prior (if the prior distribution is improper, that is if it has no finite integral or if it depends on the data), and other times the prior, although proper, is so weak that we would not want to draw from it because it includes highly unrealistic values.
+
+If instead we set parameters, we want to pick reasonable values, which can be done based on prior information or fit to the data.  That is, we can fit the model to the data and then perform a simulation-based check, using the data-based estimates as assumed parameter values.
+
+With hierarchical models we will often mix these approaches, choosing values for the hyperparameters and then simulating from there.
+
+Another challenge is to set the unmodeled data, for example N and x in a regression model.  These can be assigned fixed values or simulated from some distribution. In general, simulating a process requires more assumptions than are needed to fit a model.

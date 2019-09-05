@@ -1,13 +1,18 @@
 # What's Missing from BDA3
 
-Organize this list roughly in order of topics in the BDA book
+* Informative priors
 
 * Scaling of parameters and data
 
-* Iterative nature of model building; components of models as placeholders
+* Stacking for averaging multiple fitted models
 
-* Weakly informative priors
+* Workflow
 
 * Simulation-based checking as a way of life
 
-* PSIS
+* The folk theorem of statistical computing
+
+* Deep learning models
+
+* Complex multilevel regressions
+

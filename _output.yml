@@ -15,9 +15,9 @@ bookdown::gitbook:
       size: 2
     toc:
       collapse: section
-      scroll_highlight: yes
+      scroll_highlight: wo yes
       before: |
-        <li style="font-size:110%; font-weight:400; font-family: Verdana, Helvetica, sans; line-height:1.4; margin: 0.5em 0 0 1em">Bayesian Statistics with Stan</li>
+        <li style="font-size:110%; font-weight:400; font-family: Verdana, Helvetica, sans; line-height:1.4; margin: 0.5em 0 0 1em"> </li>
       after: null
 
 subparagraph: yes
