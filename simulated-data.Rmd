@@ -1,0 +1,263 @@
+# Simulating Data
+
+A key step in model validation is to use simulated data
+to fit the model and then compare the posterior distribution of the
+estimated parameters with the parameter values used in the simulation.
+This procedure diagnoses problems which arise from the Stan 
+program, i.e., the implementation of the model.
+Models which are programmatically correct may fail to fit real data
+because a model is only an approximation of the true data-generating process
+and a poor approximation results in a poor fit.
+
+A Bayesian model has unmodeled data, parameters, and modeled data.  Generically we label the unmodeled data as x, the parameters as theta, and the modeled data as y.  In any given problem, though, x, theta, and y might have specific meanings, so you'll have to be careful with this.  The joint probability distribution is p(y|theta,x) = p(theta|x) p(y|theta,x):  the prior times the likelihood.
+
+Simulating data is a stepwise process:
+
+1. Choose values for all _unmodeled data_ in the target model.  That is, choose a reasonable value for x, where "reasonable" depends on the context, the sorts of problems for which you wish to fit your model.
+
+2. Simulate _parameters_ from the prior:  draw theta from p(theta|x).
+
+3. Simulate the _modeled data_ from the parameters:  draw y from p(y|theta,x).
+
+We don't always follow these steps exactly.  In particular, in step 2 we often set theta to some particular value rather than drawing it from the prior.  We discuss this issue below.
+
+
+## "Hello World" example
+
+We demonstrate simulating data with the linear regression example from the previous chapter.  Here is the Stan program:
+
+```{r}
+print_file("stan/simplest-regression.stan")
+```
+
+The variables in this model are:
+
+* unmodeled data `N` (integer; the number of observations) and `x` (vector of length N; the predictor)
+
+* parameters `a` (real number), `b` (real), and `sigma` (real, restricted to be positive)
+
+* modeled data `y` (vector of length N; the outcome in the regression)
+
+#### Step 1:  Unmodeled data {-}
+
+We set $N = 50$.
+
+We set $x$ by sampling $N$ independent values uniformly distributed between 0 and 10.
+
+The above choices are arbitrary.  In general we would want the values to make sense in some context.  For that reason we often want a "cover story" for our simulation.  For example, x and y could be test scores for a class of N students at the beginning and end of the semester, so the regression model predicts final score from initial score.  In this example, there are 50 students in the class, and the scores on the initial exam range from 0 to 50.
+
+#### Step 2:  Parameters {-}
+
+There are two options for creating parameters in a simulation study:  drawing from the prior distribution or setting to particular values.
+
+
+#### Option 2a:  Drawing parameters from their prior distribution {-}
+
+This step is straightforward; it just requires a generative model for the parameters, p(theta|x).  Recall that, in general, "x" represents all unmodeled data, so it can include user-specified hyperparameters in a model.
+
+In our simple regression example, there is no distribution to draw from, so we set the parameter vector theta to a particular value, as we discuss next.
+
+#### Option 2b: Setting parameters to particular values {-}
+
+There are two reasons why in assumed-data simulation, we do not always follow the fully Bayesian approach of drawing the parameters from their prior distribution, p(theta|x).
+
+First, it is simpler to pick than to sample, and then we can understand the model at a particular chosen value of the parameters.
+
+Second, we often use noninformative or weak prior distributions. It is impossible to sample from an improper prior (for example, uniform(-infinity, +infinity), which is the default in Stan for unconstrained parameters).  And with a very weak but proper prior, we could sample but that could result in extreme and uninteresting parameter values for the simulation.  For example, suppose you have a normal(0, 100) prior on a regression coefficient that is defined on unit scale.  Then if you take a random draw, you can get a value such as -65 or +110 which can result in highly unrealisic data.  Sure, you could check the performance of your program in such cases, but do you really want to do so?  If it works in such a case, who cares?  And if it doesn't work, this may represent a hard-to-fit zone in data space that you would never be in danger of encountering in a real problem.
+
+In such examples with noninformative or weak priors, you might say that we should put in a realistic prior instead---and you might be right to make that suggestion---but it is not always worth the trouble to construct and justify such priors, so it is good to know how to do fake data simulation when priors are weak.
+
+In our regression example we have flat priors and so we set the parameters to what seem like reasonable values.  We set a=2, b=3, sigma=5.  Once we have simulated the modeled data (see Step 3 below), we can graph y vs. x and see if the result makes sense given our cover story.
+
+#### Option 2c:  Setting some parameters to fixed values and drawing others from their prior distribution {-}
+
+We often do this with hierarchical models, picking values for hyperparameters and then drawing intermediate-level parameters from their prior, conditional on the chosen hyperparameters.  We shall illustrate below with the 8 schools example.
+
+#### Step 3:  Modeled data {-}
+
+The next step is to draw y from p(y|theta,x).  In our regression example, we sample y_n, n=1,...,N independently with means a + b*x_n and standard deviation sigma.
+
+### R code {-}
+
+These above steps can all be done in R:
+
+```{r, echo=TRUE}
+N <- 100
+a <- 2
+b <- 3
+sigma <- 5
+x <- runif(N, 0, 10)
+y <- rnorm(N, a + b*x, sigma)
+hello_data <- list(N=N, x=x, y=y)
+```
+
+### Fitting the Stan model and reading the output {-}
+
+We can now fit the Stan model, passing in the data list N, x, y.
+
+```{r fit-data-cmd, echo=FALSE, eval=FALSE}
+fit <- stan("stan/simplest-regression.stan", data = hello_data)
+```
+```{r fit-data-do, include=FALSE}
+fit <- stan("stan/simplest-regression.stan", data = hello_data)
+```
+
+Here is the summary of the fitted model:
+
+```{r fit-data}
+print(fit)
+```
+
+(The below description will all change as we are changing default Stan output.)
+
+Now we go through the output:
+
+* The first few lines summarize the Stan run, with the name of the
+  file, the number of chains and iterations.  In this case, Stan ran
+  the default 4 chains with 1000 warmup iterations followed by 1000
+  post-warmup iterations, yielding 4000 post-warmup simulation draws
+  in total.
+
+* The left column of the table has the names of parameters,
+  transformed parameters, and generated quantities produced by
+  `model.stan`.  In this case, the parameters are a, b, and sigma; the
+  only transformed parameter is `lp__` (the log-posterior density or
+  target function created by the Stan model); and there are no
+  generated quantities.
+
+* The next column of the table shows the mean (average) of the 4000
+  draws for each quantity.
+
+* The next column shows the Monte Carlo standard error, which is an
+  estimate of the uncertainty in the mean.
+
+* The next column shows the standard deviation of the draws for each
+  quantity.  As the number of simulation draws increases, mean should
+  approach the posterior mean, se_mean should go to zero, and sd
+  should approach the posterior standard deviation.  For most purposes
+  we can ignore se_mean.
+
+* The next several columns give quantiles of the simulations.
+
+* The next columns gives the effective sample size and
+  $\widehat{R}$. Typically we want $\widehat{R}$ to be less then 1.1
+  for each row of the table.
+
+In the above output, $\widehat{R}$ is less then 1.1 for all
+quantities, so the chains seem to have mixed well, and we use the
+results to summarize the posterior distribution.
+
+### Comparing fitted model to assumed parameter values {-}
+
+We can compare the
+posterior inferences to the assumed parameter values (here, $a=`r a`$, $b=`r b`$,
+and $\sigma=`r sigma`$).  These assumed values are roughly within the range of
+uncertainty of the inferences.
+
+## Hierarchical model
+
+We'll demonstrate simulated-data checking again, this time with the 8 schools model, which you should already be familiar with because it is in the Stan setup page.  For background and more detail on the example, see chapter 5 of Bayesian Data Analysis.
+
+### Stan program {-}
+
+```{r}
+print_file("stan/schools.stan")
+```
+
+### Fitting the model to data {-}
+
+```{r, echo=TRUE}
+schools <- read.table("data/schools.txt", header=TRUE)
+schools_data <- list(J=nrow(schools), y=schools$estimate, sigma=schools$sd)
+schools_fit <- stan("stan/schools.stan", data=schools_data, refresh=0)
+print(schools_fit)
+```
+
+
+### Step 1:  Unmodeled data {-}
+
+Look at the Stan model.  The data are J (integer), y (vector of length J), and sigma (vector of length J).  Of these, only y is modeled, so J and sigma are the unmodeled data.
+
+For simplicity in the simulation, we set J and sigma to their values in the eight schools data; thus, J=8 and sigma = (15, 10, 16, ...):
+```{r, echo=TRUE}
+J_a <- nrow(schools)
+sigma_a <- schools$sd
+```
+
+We use the "_a" suffix to denote "assumed," as these are the data values we are temporarily assuming are true, for the purpose of the simulation.  In the previous example we did not need such notation because we only had simulated data, but in eight schools example we want to avoid confusion with the actual data.
+
+We have chosen the unmodeled data in the simulation to equal their values in the real data.  But that is just one possible choice.
+
+If we wanted to check our fitting procedure more generally, we would have to consider other possibilities, and this demonstrates one of the challenges of simulation-based checking.  For example, suppose we wanted to fit the model to 80 schools rather than just 8.  Setting J=80 is easy, but then what values do we use for sigma?  We could simply loop the 8 sigmas in the data 10 times, but that's just one particular choice.
+
+The point here is that simulation-based checking requires on some level that we model the unmodeled data.  To put it another way:  in a fully Bayesian setting there is no such thing as unmodeled data.
+
+### Step 2:  Parameters {-}
+
+The parameters in the eight schools model are mu (a real number), tau (real, constrained to be positive), and eta (vector of length of length J).  In the model as written, mu and tau have flat priors so it's not possible to draw from them.
+
+So how to set mu and tau?  A natural choice is to use their estimated values from the fitted model:
+```{r, echo=TRUE}
+mu_a <- median(extract(schools_fit)$mu)
+tau_a <- median(extract(schools_fit)$tau)
+```
+It would also be fine to use approximate values such as mu_a = 10, tau_a = 5.  Again, the suffix "_a" represents "assumed" values.
+
+Once we have mu and tau, we should draw the vector eta from its prior distribution, which in this case is unit normal (see Stan code above); in R,
+```{r, echo=TRUE}
+eta_a <- rnorm(J_a, 0, 1)
+```
+
+### Step 3:  Modeled data {-}
+
+We are now ready to simulate the modeled data given the assumed parameters and unmodeled data:
+```{r, echo=TRUE}
+y_a <- rnorm(J_a, mu_a + tau_a*eta_a, sigma_a)
+```
+Using R syntax, we have simulated the entire vector of assumed data y.
+
+### Fitting the model in Stan {-}
+
+We can now put the assumed data together:
+```{r, echo=TRUE}
+schools_data_a <- list(J=J_a, y=y_a, sigma=sigma_a)
+schools_fit_a <- stan("stan/schools.stan", data=schools_data_a, refresh=0)
+```
+We only need to pass the data (both modeled and unmodeled).  We keep the assumed parameters (in this case, mu_a, tau_a, and eta_a) in reserve so we can compare them to our inferences from the fitted model.
+
+### Comparing inferences from the fitted model to the assumed parameter values {-}
+
+We can now check the simulation.
+```{r, echo=TRUE}
+print(schools_fit_a)
+print(c(mu_a, tau_a, eta_a))
+```
+Ideally this would be done as a pre-coded function.
+
+## Challenges
+
+What we demonstrated in this chapter can be considered a crude version of simulation-based calibration. You should not in general expect intervals to have their nominal coverage, given that: (a) in many cases we are setting parameters to fixed values rather than drawing from the prior distribution, and (b) in any case, we just do one simulation.
+
+Nonetheless, in many cases we can learn from a simple one-shot simulation check.  Sometimes the posterior inferences line up to the assumed parameter values, and we feel a bit more confidence about our fitting procedure; other times the fit isn't even close, and we've discovered some major bug. 
+
+When a simulation check reveals a problem, we need to go back and figure out what went wrong. It could be a typo in the Stan program, a mislabeling of variables, an omission from the model, or even a problem with the R or Stan program we use to simulate the data.
+
+If you can't find the problem, the next step is to simplify the model, to go backward until you have a model you can trust, and then add complexities one at a time, performing simulation-based validation at each step.
+
+#### Posterior geometry can depend on data (and thus, indirectly, on assumed parameter values) {-}
+
+Model space can be big.  For a simple model such as linear regression with uniform prior, it doesn't really matter what are your assumed parameter values; you should be able to reconstruct them from data.  More generally, though, a model looks different for different parameter values.
+
+For example, in a mixture model, if the underlying components are well separated, then it should be relatively easy to distinguish them from data, but if there is a lot of overlap, the inferential challenge is greater.  On one hand, this implies that if we want to check the ability of a Stan program to fit a model, we should consider all sorts of possibilities for the assumed underlying parameters.  Looking at it another way, what is important is that we can fit the model in settings corresponding to parameter values that are realistic in the context of the application of interest.
+
+For another example, predictive distributions for discrete-data models can depend strongly on parameter values.  For a simple example, consider a logistic regression, $y_i = \mbox{logit}^{-1}(a + bx_i)$, for $i=1,...,100$, with predictor values $x_i$ that fall in the range (-1,1).  If the parameters $a$ and $b$ are near 0 or 1 in absolute value, fine.  But if $a=10$ and $b=0.1$, then the data will almost certainly all be 1's, thus inference will depend strongly on the prior.  That should be fine, but it's a different sort of posterior geometry than would arise from logistic regression with a mix of 0's and 1's.
+
+#### What parameter values to choose? {-}
+
+If we can draw all parameters from the prior, that eliminates all choice from the predictive simulation.  However sometimes we can't draw from the prior (if the prior distribution is improper, that is if it has no finite integral or if it depends on the data), and other times the prior, although proper, is so weak that we would not want to draw from it because it includes highly unrealistic values.
+
+If instead we set parameters, we want to pick reasonable values, which can be done based on prior information or fit to the data.  That is, we can fit the model to the data and then perform a simulation-based check, using the data-based estimates as assumed parameter values.
+
+With hierarchical models we will often mix these approaches, choosing values for the hyperparameters and then simulating from there.
+
+Another challenge is to set the unmodeled data, for example N and x in a regression model.  These can be assigned fixed values or simulated from some distribution. In general, simulating a process requires more assumptions than are needed to fit a model.

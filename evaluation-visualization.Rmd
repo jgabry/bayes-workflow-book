@@ -1,0 +1,30 @@
+# Evaluation, Visualization, and Workflow
+
+Data analysis workflow has three steps:
+
+1.  Model building
+2.  Model fitting
+3.  Model checking and improvement.
+
+## Visualization
+
+* ShinyStan, analysis & visualization GUI for MCMC:  https://mc-stan.org/users/interfaces/shinystan
+
+* bayesplot:  http://mc-stan.org/bayesplot/
+
+## Fitting a series of models
+
+## Statistics beyond data anlysis
+
+* Measurement and data collection, decision analysis, communication
+
+## Diagnostics
+
+* R-hat, divergences, Bayesplot, loo, stacking, etc.
+Papers:  http://www.stat.columbia.edu/~gelman/research/unpublished/1903.08008.pdf by Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and Paul-Christian Bürkner;
+https://mc-stan.org/users/documentation/case-studies/divergences_and_bias.html by Michael Betancourt.
+
+## Bayesian workflow
+
+Papers:  http://www.stat.columbia.edu/~gelman/research/published/bayes-vis.pdf by Jonah Gabry, Daniel Simpson, Aki Vehtari, Michael Betancourt; https://mc-stan.org/users/documentation/case-studies/rstan_workflow.html by Michael Betancourt
+

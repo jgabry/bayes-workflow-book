@@ -1,13 +1,13 @@
 ---
 knit: "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
-title: "Bayesian Workflow Using Stan"
-author: "Stan Development Team"
+title: ""
+author: ""
 description: "Bayesian Workflow Using Stan, with examples and programming techniques."
 site: bookdown::bookdown_site
 cover-image: img/logo-tm.pdf
 documentclass: book
 classoption: oneside, openany
-bibliography: [bibtex/all.bib]
+#bibliography: [bibtex/all.bib]
 biblio-style: apalike
 link-citations: yes
 fontsize: 10pt
@@ -15,91 +15,36 @@ monofont: "Lucida Console"
 subparagraph: yes
 ---
 
-# About this Book {-}
-
 <img style="float:right; margin: -2em 0em 4em 4em" src="img/logo-tm.png" width="225" alt="Stan logo" />
+
+# Bayesian Workflow Using Stan (R edition) {-}
 
 This book is an example-driven introduction to Bayesian modeling and inference using Stan, a platform for statistical modeling and high-performance
 statistical computation.
 
+* Bayesian
 
+_Bayesian inference_ is a framework for estimating parameters and constructing predictions given probability models and data. _Bayesian data analysis_ is the larger process of building, fitting, and checking probability models.
 
-## How to use this book {-}
+* Workflow
 
-Part 1 introduces Bayesian data analysis and Stan through a series of
-examples.
+By _workflow_ we mean the fuller process of data analysis, including fitting multiple models to data and figuring out how to include more information in your model.
 
-Part 2 gives Stan code and discussions for several important classes
-of models.
+* Using Stan
 
-Part 3 discusses various general Stan programming techniques that are
-not tied to any particular model.
+_Stan_ is an open-source computer
+program for Bayesian inference and simulation. 
 
-Part 4 is a brief review of statistical inference.
+* R edition
 
-The appendices provide a style guide and advice for users of BUGS and JAGS.
+Stan can be run from
+R, Python, Julia, or other scientific/statistical software.  In the
+examples in this book, we set up data and run Stan from R, but our
+focus is on Stan, not the R code.  We hope soon to have translations for this book in Python and other languages.
 
-We recommend working through this book using the textbooks _Bayesian
-Data Analysis_ and _Statistical Rethinking: A Bayesian Course with
-Examples in R and Stan_ as references on the concepts, and using the
-Stan Reference Manual when necessary to clarify programming issues.
-Further resources are given at the end of the introductory chapter.
+* Copyright, Trademark, and Licensing
 
-## Additional Stan manuals and guides {-}
-
-In addition to this book, there are two reference manuals for
-the Stan language and algorithms.  The *Stan Reference Manual*
-specifies the Stan programming language and inference algorithms. The
-*Stan Functions Reference* specifies the functions built into the Stan
-programming language.
-
-There is also a separate installation and getting started guide for
-each of the Stan interfaces (R, Python, Julia, Stata, MATLAB, 
-Mathematica, and command line).
-
-## Web resources {-}
-
-Stan is an open-source software project, resources for which are
-hosted on various web sites:
-
-* The [Stan Web Site](http://mc-stan.org/) organizes all of the resources
-for the Stan project for users and developers.  It contains links to
-the official Stan releases, source code, installation instructions,
-and full documentation, including the latest version of this manual,
-the user's guide and the getting started guide for each interface,
-tutorials, case studies, and reference materials for developers.
-
-* The [Stan Forums](http://discourse.mc-stan.org) provide structured
-message boards for questions, discussion, and announcements related to
-Stan for both users and developers.
-
-* The [Stan GitHub Organization](https://github.com/stan-dev) hosts all
-of Stan's code, documentation, wikis, and web site, as well as the
-issue trackers for bug reports and feature requests and interactive
-code review for pull requests.
-
-## Acknowledgements {-}
-
-The Stan project could not exit without developers, users, and
-funding.  Stan is a highly collaborative project.  The individual
-contributions of the Stan developers to code is tracked through GitHub
-and to the design conversation in the Wikis and forums.
-
-Users have made extensive contributions to documentation in the way
-of case studies, tutorials and even books.  They have also reported
-numerous bugs in both the code and documentation.
-
-Stan has been funded through grants for Stan and its developers,
-through in-kind donations in the form of companies contributing
-developer time to Stan and individuals contributing their own time to
-Stan, and through donations to the open-source scientific software
-non-profit NumFOCUS.  For details of direct funding for the project,
-see the web site and project pages of the Stan developers.
-
-
-## Copyright, Trademark, and Licensing {-}
-
-This book is copyright 2011--2018, Stan Development Team and their
+This book is copyright 2011--2019, Stan Development Team and their
 assignees.  The text content is distributed under the [CC-BY ND 4.0
 license](https://creativecommons.org/licenses/by-nd/4.0/legalcode).
 The user's guide R and Stan programs are distributed under the [BSD

@@ -1,3 +1,5 @@
+# Some Self-Contained Examples
+
 ```{r include=FALSE, cache=FALSE}
 # LIBRARY CONFIGURATION
 
@@ -53,7 +55,7 @@ options(htmltools.dir.version = FALSE)
 
 set.seed(1123)
 ```
-# Some Self-Contained Examples
+
 
 ## What is in this chapter?
 
@@ -364,21 +366,13 @@ To perform Bayesian inference we also need a prior distribution on all
 the parameters, which in this case are $\theta_1$, $\theta_2$, and
 $\sigma$.
 
-First, the parameters have some mathematical constraints.  The
-available ratings are 0 through 5, so each $\theta$ must fall in that
-range as well, and $\sigma$ cannot be more than 2.5, and that is the
-maximum standard deviation among all distributions defined in the
-range $[0,5]$ (with that maximum attained with the distribution with
-all its mass at the extremes, with half the responses at 0 and half at
-5).
-
-Beyond this, we will assume that movies typically get ratings of
+We will assume that movies typically get ratings of
 around three stars.  We'll give normal prior distributions with mean 3
 and standard deviation 1 to each of the parameters $\theta_1$ and
 $\theta_2$, which represent the underlying or population-average
 ratings of the two movies.
 
-Here is the resulting Stan model:
+Here is the resulting Stan program:
 
 ```{r}
 print_file("stan/ratings_1.stan")
@@ -1278,7 +1272,7 @@ print(fit1)
 
 ## Time series competition
 
-A few years ago someone sent me an email about a "Global Climate
+A few years ago someone sent us an email about a "Global Climate
 Challenge" that he had seen online, and which was introduced as
 follows:
 
@@ -1335,7 +1329,7 @@ for (n in 1:N) {
 
 Aha! The lines are fanning out from a common starting point. We'll fit
 a regression to each line and then summarize each line by its average
-slope.
+slope.  This is not necessarily the most efficient way to estimate a slope from correlated data, but we will not be concerned about that, as our purpose here is to demonstrate decision analysis in the context of a fitted model, rather than to fit the model in an optimal way.
 
 ```{r}
 slope <- rep(NA, N)
@@ -1513,8 +1507,8 @@ etc. After all, he could well have first chosen a seed and generated
 the series, then performed something like the above analysis and
 checked that the most natural estimate gave only 850 correct or so,
 and in the very unlikely event that the natural estimate gave 900 or
-close to it, just re-running with a new seed. I have no reason to
-think that the creator of this challenge did anything like that; my
+close to it, just re-running with a new seed. We have no reason to
+think that the creator of this challenge did anything like that; our
 point here is only that, even if he did his simulation in a completely
 clean way, our odds of winning are about 1 in 200,000---about 1/20th
 what we'd need for this to be a fair game.
@@ -1527,7 +1521,7 @@ way to win the game by extracting more information from each series,
 but it won't be easy.
 
 You could say that the above all demonstrates the designer's point,
-that you can't identify a trend in a time series of this length. But I
+that you can't identify a trend in a time series of this length. But we
 don't think it would make sense to draw that conclusion from this
 exercise. After all, you can just tweak the parameters in the problem
 a bit---or simply set the goal to 800 correct instead of 900---and the

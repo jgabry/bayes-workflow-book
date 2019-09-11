@@ -4,19 +4,22 @@ delete_merged_file: TRUE
 rmd_files: [
   "index.Rmd",
 
-  "part1.Rmd",
+  "part1.Rmd", 
   "introduction.Rmd",
-  "fake-data.Rmd",
-  "prior-data-models.Rmd",
-  "simple-examples.Rmd",
-  "workflow.Rmd",
+  "simulated-data.Rmd",
   "modeling-as-software.Rmd",
+  "evaluation-visualization.Rmd",
+  "other-algorithms.Rmd",
 
   "part2.Rmd",
-  "bayesian-data-analysis.Rmd",
-  "maximum-likelihood.Rmd",
-  "bayesian-estimation.Rmd",
-  "variational-inference.Rmd",
+  "basic-examples.Rmd",
+  "simple-examples.Rmd",
+  "efficient.Rmd",
+  "workflow.Rmd",
 
-  "references.Rmd"
+  "part3.Rmd",
+  "stan-doc.Rmd",
+  "bda-review.Rmd",
+  "bda-whats-missing.Rmd",
+  "how-to-case-studies.Rmd"
 ]

@@ -1,0 +1,18 @@
+# What's Missing from BDA3
+
+* Informative priors
+
+* Scaling of parameters and data
+
+* Stacking for averaging multiple fitted models
+
+* Workflow
+
+* Simulation-based checking as a way of life
+
+* The folk theorem of statistical computing
+
+* Deep learning models
+
+* Complex multilevel regressions
+

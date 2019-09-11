@@ -1,0 +1,11 @@
+# Some Basic Examples
+
+Here are some standard models that we demonstrate using the following template:
+- Write the model in mathematics as p(theta|x) and p(y|theta,x), where x are unmodeled data, y are modeled data, and theta are parameters.
+- Write the model in Stan.
+- Use R to simulate data from the model.
+- Fit the model in Stan.
+- Compare fitted model to assumed parameter values.
+
+Our intention is to replace this chapter with "footnotes" in the Stan User's Guide.  The User's Guide presents and explain Stan code for various classes of models, but without the code in R for simulating data and running Stan.  These footnotes will contain runnable examples as structured above.
+

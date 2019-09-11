@@ -38,7 +38,7 @@ projects do not have long-term reproducibility needs, so be careful to
 choose the right tooling for the job at hand.^[To guarantee bit-level reproducibility, and often even just to get a program to run, everything from hardware to the operating system to every piece of software and setting must be reproduced.]
 
 
-## Scripts are Good Documentation {-}
+### Scripts are Good Documentation {-}
 
 It may seem like overkill if running the project is only a single line
 of code, but the script provides not only a way to run the code, but
@@ -269,3 +269,24 @@ comment.  The problem with including dates or other volatile
 information in comments is that they can easily get out of synch with
 the reality of the code.  A misleading comment or one that is wrong is
 worse than no comment at all!
+
+## Stan coding and Bayesian workflow
+
+Some guidance on (a) how to construct a Bayesian model, and (b) how to do this construction in Stan.  Ideally the reader would learn to write a Stan model directly, rather than first writing it in math and then translating to Stan.
+
+Start small, build up, relation to workflow
+
+R and python
+
+code bottom up is harder than it sounds
+
+show it with an example such as world cup
+
+## Future developments in Stan
+
+### Pedantic mode {-}
+
+### Blockless {-}
+
+### Equivalence of vectors and array {-}
+

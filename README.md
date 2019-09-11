@@ -1,8 +1,4 @@
-# The Stan Book
-
-This is the repository for *Bayesian Statistics Using Stan", which
-serves as both the Stan users' guide and an introduction to Bayesian
-statistics.
+This is the repository for the book *Bayesian Workflow Using Stan* (working title). The book is in its early stages of development so the content on the master branch may change substantially.
 
 ### Directory Structure
 

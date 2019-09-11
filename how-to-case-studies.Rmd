@@ -1,0 +1,39 @@
+# Stan Case Studies and Example Models
+
+The Stan community has a rich connection of case studies here:  https://mc-stan.org/users/documentation/case-studies
+
+Each case study is a self-contained knitr or Jupyter notebook with runnable code.  A good way to learn Stan is to work through these case studies one at a time in Rstudio, running the code and reading the writeup.  You can also use the case studies as starting points for your own applied analyses on related problems.  Some of the case studies are more applied; others focus on Stan coding or mathematics.
+
+Here we briefly describe some of the case studies.  There are many other case studies at the above link and from Stan conferences (https://github.com/stan-dev/stancon_talks) and Stan tutorials (https://mc-stan.org/users/documentation/tutorials.html).  We also have hundreds of runnable example models here:  https://github.com/stan-dev/example-models/wiki; these are direct translations from other sources and so do not necessarily represent best practice in Bayesian modeling or Stan coding, but they could be useful in getting started with some class of models.
+
+## Predator-prey dynamics:  A differential equation model
+
+https://mc-stan.org/users/documentation/case-studies/lotka-volterra-predator-prey.html
+
+This is a model of two time series---the number of lynx and the number of hares---that are related with a system of two differential equation:  When the number of lynx goes up, they eat more hares and the hare population declines.  When the number of hares goes down, there's less food for the lynx so the lynx population declines.  The model thus has a natural cycle.  In this case study, Bob Carpenter explains the differential model mathematically, sets it up in Stan, fits it to data, checks the fit of the model, and uses it to make predictions.  The case study concludes with exercises in which you can extend the model in various ways.
+
+## Splines
+
+https://mc-stan.org/users/documentation/case-studies/splines_in_stan.html
+
+Splines are an important method for nonparametric regression.  In this case study, Milad Kharratzadeh describes a spline model, gives Stan code for fitting it, and demonstrates with simulated data in R.
+
+## Conditional autoregressive models for spatial data
+
+https://mc-stan.org/users/documentation/case-studies/icar_stan.html
+
+Spatial correlation models allow partial pooling among neighboring areas.  In this case study, Mitzi Morris lays out the mathematics of the ``intrinsic conditional autoregression model,'' gives Stan code for the model, and fits it to an example dataset.  She then expands the model, fits it to a second dataset, and displays the fit graphically.
+
+## Case study on mixture models
+
+https://mc-stan.org/users/documentation/case-studies/identifying_mixture_models.html
+
+Mixture models can be difficult to fit because of difficulties in identification arising from uncertainty about which cases go into which mixture components.  Bayesian inference can help by accounting for this uncertainty and also by using prior distributions to constrain the fit.  In this case study, Michael Betancourt discusses these challenges from a mathematical perspective and then demonstrates using a simple model in Stan.
+
+## Item response models from psychometrics
+
+https://mc-stan.org/users/documentation/case-studies/hierarchical_2pl.html
+
+https://mc-stan.org/users/documentation/case-studies/dyadic_irt_model.html
+
+Item response models predict success on test questions (``items'') based on item characteristics (``difficulty'' and ``discrimination'') and student characteristics (``ability'').  These models start with simple logistic regressions with one parameter for each item and each student and can become arbitrarily complicated by allowing for different response functions for different questions, multiple dimensions of ability, additional measurements at the level of items and students. and so on.  The models typically have nonoverlapping multilevel structure (multiple items and multiple students).  In the above case studies, Daniel Furr, Nicholas Sim, Brian Gin, Anders Skrondal, and Sophia Rabe-Hesketh explain and fit some item response models.
