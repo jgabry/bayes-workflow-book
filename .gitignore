@@ -2,3 +2,13 @@ _book/*
 _bookdown_files/*
 _main.rds
 .Rhistory
+.Rproj.user
+.RData
+_publish.R
+_book
+_bookdown_files
+rsconnect
+.DS_Store
+*/*.log
+*/*.gz
+*/*.bak
