@@ -26,7 +26,7 @@ In RStudio: to build the project, open `index.Rmd` in RStudio and click `knit`
 
 First, you will need to install `pandoc` and `pandoc-citeproc` in
 addition to the `bookdown` package in R.  After that, it can be built
-from within R in this directory using `bookdown::render('index.Rmd')`
+from within R in this directory using `bookdown::render_book('index.Rmd')`
 or from the shell using `./build.sh` to build both PDF and HTML
 versions.
 
