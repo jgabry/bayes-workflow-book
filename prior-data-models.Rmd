@@ -1,8 +1,19 @@
 # Prior Distributions and Models for Data
+In this chapter we explain in some detail what a prior distribution is and how it relates to the likelihood and in turn how the prior and likelihood combine to express the posterior distribution of a parameter. We provide some examples to contextualize how the prior actually works and how much influence it can have on the model building process. We also explain the various types of priors that you can use based on the problem you are trying to model or solve. 
+
+
+## The role of the prior distribution [Gelman, Simpson, Betancourt 2017]
+The prior distribution in Bayesian analysis fulfills many different purposes. The prior distribution contains information that is relevant to the problem under consideration. For example if your parameter of interest is a proportion or a probability, you know it has to be between 0 and $1$. The prior can encode this information that is known "apriori", i.e before designing an experiment or engaging with data. In the world of Stan and the practical estimation of Bayesian models it takes on another role by regularizing or constraining the possible parameter space. This helps with drawing inferences in high-dimensional problems. 
 
 ## Prior, likelihood, posterior densities; Bayes as information aggregation
 
-As discussed in the context of the Hello World example in chapter 1, a
+- It is important to begin by understanding how the prior and likelihood combine to yield the posterior. Unsurprisingly, Bayes' rule plays a pivotal role in Bayesian inference! The prior and likelihood distributions are combined using Bayes' rule and this gives us the posterior distribution. Say $\theta$ is your parameter of interest and $y$ is the data that you have. Bayesian inference is essentially concerned with learning about unknown or unobservable quantities using known or empirically observed quantities. In this case our data $y$ is observed but our parameter $\theta$ is the quantity of interest which is unknown. Researchers though, generally tend to have some prior knowledge about $\theta$. For example if $\theta$ is a probability or proportion, then you know it has to be between 0 and 1. On the other hand if $\theta$ is the average height of a population you know it can't be negative, or for that matter $+\infty$. This prior knowledge is embedded in the distribution $p(\theta)$, also called the prior distribution. The likelihood distribution is the probability of the data conditional on the parameter $\theta$. Essentially using Bayes rule with a given probability model means that the data $y$ affect the posterior distribution only through the likelihood function $p(y|\theta)$ (cite BDA3 page 7-8). The prior and likelihood are multiplied to obtain the numerator of the expression on the RHS below. The denominator is often called the normalizing constant and it is usually extremely difficult or impossible to compute this integral. So we drop the normalizing constant and are able to obtain a distribution that is proportional to the posterior by considering only the numerator (i.e $p(\theta).p(y|\theta)$.
+
+$$p(\theta|y) = \frac{p(\theta)  p(y|\theta)}{\int_{\theta} p(\theta)  p(y|\theta)}$$
+
+$p(\theta|y)$ denotes the Bayesian posterior distribution of the parameter $\theta$. It can be interpreted as the probability distribution of the parameter conditional on the data.
+
+- As discussed in the context of the Hello World example in chapter 1, a
 Stan model is constructed by adding to the objective function or
 log-posterior density; each line in the model block with "target +="
 or a "~" symbol adds a term.  The increments can come in any order, as
@@ -14,9 +25,15 @@ inference as information aggregation: Prior information, data
 information, all of it is just information that is fed into the
 inference engine.
 
-## Example:  apparently duplicate priors
+<!-- ## Example:  apparently duplicate priors -->
+### Example : apparently duplicate priors
+This example demonstrates how the posterior mean is a weighted average of the prior and likelihood mean. It enables you to see how the prior and posterior mean combine to express information. 
+First generate your data in R, by drawing a single observation from a normal distribution (with arbitrarily chosen mean and variance).
+```
+y <- rnorm(n = 1, mean = 10, sd = 2)
+```
 
-Start with the following simple Stan program:
+Then use the following Stan program to estimate your posterior mean $\theta$
 
 ```
 data {
@@ -33,7 +50,12 @@ model {
 
 Here, the prior and data happen to provide the same amount of
 information about $\theta$, and the posterior mean of $\theta$ will
-fall halfway between the data, $y$, and the prior mean, 0.
+fall halfway between the data, $y$, and the prior mean, 0. 
+This comes from the formula
+$$
+\theta = \frac{\frac{y}{\sigma^2} + \frac{\theta_0}{\sigma_0^2}}{\frac{1}{\sigma^2} + \frac{1}{\sigma_0^2}}
+$$
+where $\theta_0 = 0$, $\sigma = \sigma_0 = 1$. You will find that the posterior estimate of $\theta$ is the average of 0 and y.
 
 Now suppose we add a new line to the model block, apparently
 duplicating the prior:
@@ -91,133 +113,174 @@ as it just looks confusing.  But understanding how it works gives
 insight into the way that priors and data combine to express
 information.
 
+<!-- ## Concentration of the likelihood -->
+### Example : Concentration of the likelihood
 
-## Concentration of the likelihood
+Given that the posterior is a compromise between the prior and likelihood,for any fixed model, as the sample size increases, the likelihood
+becomes more informative. 
+Consider the following example;
+Say you have data $y$ generated from a normal distribution as shown below;
+```
+set.seed(24)
+y <- rnorm(3,100,2)
+N <- length(y)
+```
+Now say we use the following model to estimate the mean of the data with known standard deviation = 2.
+```
+data{
+    int N;
+    real y[N];
+  }
+parameters {
+    real mu;
+  }
+model{
+    y ~ normal(mu, 2);
+    mu ~ normal(10,2);
+  }
+```
+Given we have generated only 3 data points and have supplied the prior information that the mean is around 10 we observe the following posterior distribution.
+```{r, results = F}
+set.seed(24)
+y <- rnorm(3,100,2)
+N <- length(y)
+stan_mod <- "
+  data {
+    int N;
+    real y[N];
+  }
+  parameters {
+    real mu;
+  }
+  model {
+    y ~ normal(mu, 2);
+    mu ~ normal(10,2);
+  }"
 
-For any fixed model, as the sample size increases, the likelihood
-becomes more informative.  This can be seen, for example, in the
-mdoels above, where each additional data point adds another term to
-the likelihood in the implicit vector addition of the `target +=` or
-`~` statement.  See Chapter 4 of _Bayesian Data Analysis_ for more on
+f2 <- stan(model_code = stan_mod,
+           data = list("N",
+                       "y"),
+           iter = 1000,
+           chains = 3)
+
+
+
+#pulling results
+f2_results <- as.data.frame(f2)
+
+#making the plot
+```
+
+```{r, echo = F}
+set.seed(24)
+#likelihood
+# print(y)
+plot(density(y),
+     col = "darkgray",
+     main = paste0("sample size (N) =",N),
+     xlab = NA,
+     bty = 'n',
+     xlim = c(0,130),
+     lty = 1)
+legend("topright",
+       legend = c("prior",
+                  "likelihood",
+                  "posterior"),
+       col = c("black",
+               "darkgray",
+               "black"),
+       bty = 'n',
+       lty = c(3,1,1),
+       cex = 0.6)
+
+#prior
+lines(density(rnorm(N,10,3)),
+      col = "black",
+      lty = 3)
+
+#posterior
+lines(density(rnorm(N,
+                    mean(f2_results$mu),
+                    2)),
+      col = "black",
+      lty = 1)
+```
+It is clearly visible that the posterior distribution falls between the prior and likelihood. But what if we were to increase the sample size to say, 50?
+```{r, results = F}
+set.seed(24)
+y <- rnorm(50,100,2)
+N <- length(y)
+stan_mod <- "
+  data {
+    int N;
+    real y[N];
+  }
+  parameters {
+    real mu;
+  }
+  model {
+    y ~ normal(mu, 2);
+    mu ~ normal(10,2);
+  }"
+
+f2 <- stan(model_code = stan_mod,
+           data = list("N",
+                       "y"),
+           iter = 1000,
+           chains = 3)
+
+
+
+#pulling results
+f2_results <- as.data.frame(f2)
+
+#making the plot
+```
+
+```{r, echo = F}
+set.seed(24)
+#likelihood
+# print(y)
+plot(density(y),
+     col = "darkgray",
+     main = paste0("sample size (N) =",N),
+     xlab = NA,
+     bty = 'n',
+     xlim = c(0,130),
+     lty = 1)
+legend("topright",
+       legend = c("prior",
+                  "likelihood",
+                  "posterior"),
+       col = c("black",
+               "darkgray",
+               "black"),
+       bty = 'n',
+       lty = c(3,1,1),
+       cex = 0.6)
+
+#prior
+lines(density(rnorm(N,10,3)),
+      col = "black",
+      lty = 3)
+
+#posterior
+lines(density(rnorm(N,
+                    mean(f2_results$mu),
+                    2)),
+      col = "black",
+      lty = 1)
+```
+Evidently the likelihood becomes more informative and the posterior distribution moves much closer to the likelihood. Given that we know the actual mean of$y$ is 100 and the standard deviation is 2, we can infer that our posterior is very closely approximating the true data generating mean. It can be seen in the above example that each additional data point adds another term to the likelihood in the implicit vector addition of the `target +=` or `~` statement.  See Chapter 4 of _Bayesian Data Analysis_ for more on
 this.
 
-## Problems with so-called noninformative priors
 
-Before discussing prior distributions more generally, we share a simple example.
+## Types of priors and prior choice{#general-priors.section}
 
-You have a single parameter $\theta$ which we estimate using an
-experiment which returns an estimate $y$.  For simplicity, assume the
-estimate is unbiased, normally distributed, and with known standard
-deviation that happens to equal 1.  Thus, the data model is:
-$$
-y \sim \mbox{normal}(\theta,1).
-$$
-Now suppose you perform Bayesian inference using a uniform prior on
-$\theta$.  Then your posterior distribution is simply (see, for
-example, chapter 2 of _Bayesian Data Analysis_),
-$$
-\theta|y \sim \mbox{normal}(y,1).
-$$
+The prior only matters where the likelihood is nonzero (and vice-versa). The choice of prior depends on the problem at hand and we discuss prior choice more fully on the [prior choice wiki page](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations). Setting up priors goes along with setting up the model.  You want to set up your parameters so they are understandable, and then you will typically have some sense of their possible range, and you can use this to set up priors.  If you have a lot of data, the prior won't matter much, but there are lots of real examples where data are weak and it it is helpful to use an informative prior.
 
-OK, fine.  Now suppose your estimate happens to be $y=1$.  There are
-two ways of thinking about this:
-
-* The observed data, 1 standard error away from 0, is completely
-  consistent with a true value of $\theta=0$, or of low values of
-  $\theta$ that could be either positive or negative.  From our usual
-  statistical perspective, we would say that the data are consistent
-  with pure noise, and we cannot learn much from these data alone.
-
-* From the Bayesian posterior distribution, we can compute that
-  $\mbox{Pr}(\theta>0) = 0.84$ (in R, `pnorm(1)`), thus you should be
-  willing to bet with 5-to-1 odds that $\theta$ is positive.
-
-This seems wrong, the idea that something recognizable as pure noise
-can lead to 5:1 posterior odds.
-
-The problem is coming from the prior distribution. We can see this in
-two ways. First, just directly, effects near zero are more common than
-large effects.
-
-Jakulin et al. (2008) argue that logistic regression coefficients are
-usually less than 1. So let's try combining normal(1,1) data with a
-Cauchy(0,1) prior. It's easy enough to do in Stan:
-
-```
-data {
-  real y;
-}
-parameters {
-  real theta;
-}
-model {
-  theta ~ cauchy (0, 1);
-  y ~ normal(theta, 1);
-}
-```
-
-If we fit this model supplying data $y=1$, and then from the resulting
-simulations compute the posterior probability that $\theta > 0$, we
-get 0.77, that is, roughly a 3:1 posterior probability that the effect
-is positive.
-
-Just to check that we're not missing anything, let's re-run using the
-flat prior. New Stan model:
-
-```
-data {
-  real y;
-}
-parameters {
-  real theta;
-}
-model {
-  y ~ normal (theta, 1);
-}
-```
-and re-run with the same R code. This time, indeed, 84% of the posterior simulations of $\theta$ are greater than 0.
-
-So far so good. Although one might argue that the posterior probability of 0.77 (from the inference given the unit Cauchy prior) is still too high. Perhaps we want a stronger prior? This sort of discussion is just fine. If you look at your posterior inference and it doesn't make sense to you, this "doesn't make sense" corresponds to additional prior information you haven't included in your analysis.
-
-OK, so that's one way to consider the unreasonableness of a noninformative prior in this setting. It's not so reasonable to believe that effects are equally likely to be any size. They're generally more likely to be near zero.
-
-The other way to see what's going on with this example is to take that flat prior seriously. Suppose theta really could be just about anything---or, to keep things finite, suppose you wanted to assign theta a uniform prior distribution on $[-1000,1000]$, and then you gather enough data to estimate $\theta$ with a standard deviation of 1. Then, a priori, you're nearly certain to gather very very strong information about the sign of $\theta$. To start with, there's a 0.998 chance that your estimate will be more than 2 standard errors away from zero so that your posterior odds about the sign of $\theta$ will be at least 20-to-1. And there's a 0.995 chance that your estimate will be more than 5 standard errors away from zero.
-
-So, in your prior distribution, this particular event---that $y$ is so close to zero that there is uncertainty about $\theta$'s sign---is extremely unlikely. And it would be irrelevant that $y$ is not statistically significantly different from 0.
-
-Modeling can be difficult. In some settings the data are strong and prior information is weak, and it's not really worth the effort to think seriously about what external knowledge we have about the system being studied. Often, though, we do know a lot, and we're interested in various questions where data are sparse, and we could be putting more effort into quantifying our prior distribution.
-
-Upsetting situations---for example, the estimate of $1 \pm 1$ which leads to a seemingly too-strong claim of 5-to-1 odds in favor of a positive effect---are helpful in that they can reveal that we have prior information that we have not yet included in our models.
-
-
-
-## Priors {#general-priors.section}
-
-The prior only matters where the likelihood is nonzero (and vice-versa).  One way to think of the prior distribution is as a "regularization" or "soft constraint" on the parameters of the model.  We discuss prior choice more fully on the [prior choice wiki page](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations).
-
-We consider 5 levels of priors:
-
-- Flat prior;
-
-- Super-vague but proper prior: normal(0, 1e6);
-
-- Weakly informative prior, very weak: normal(0, 10);
-
-- Generic weakly informative prior: normal(0, 1);
-
-- Specific informative prior: normal(0.4, 0.2) or whatever. Sometimes this can be expressed as a scaling followed by a generic prior: theta = 0.4 + 0.2*z; z ~ normal(0, 1);
-
-In Stan, if you don't supply any prior at all, you are implicitly using a flat prior.  In general we don't recommend this, but for many cases in this book, such as the Hello World example above, we use flat priors for simplicity and because we are focuseing on the expression of the data model or likelihood.
-
-Setting up priors goes along with setting up the model.  You want to set up your parameters so they are understandable, and then you will typically have some sense of their possible range, and you can use this to set up priors.  If you have a lot of data, the prior won't matter much, but there are lots of real examples where data are weak and it it is helpful to use an informative prior.
-
-### Background Reading {-}
-
-See @Gelman:2006 for an overview of choices for priors for
-scale parameters, @ChungEtAl:2013 for an overview of choices
-for scale priors in penalized maximum likelihood estimates, and
-@GelmanJakulinPittauEtAl:2008 for a discussion of prior choice
-for regression coefficients.
+### Flat priors
+In Stan, if you don't supply any prior at all, you are implicitly using a flat prior.  In general we don't recommend this, but for many cases in this book, such as the Hello World example in Chapter 1, we use flat priors for simplicity and because we are focusing on the expression of the data model or likelihood.
 
 ### Improper Uniform Priors {-}
 
@@ -293,7 +356,7 @@ typically signal that the prior is not appropriate for the model.  It
 can also cause numerical problems with underflow and overflow when
 sampling or optimizing.
 
-### "Uninformative" Proper Priors {-}
+### "Uninformative" Proper Priors 
 
 It is uncommon to see models with priors on regression coefficients
 such as $\mathsf{normal}(0,1000)$.^[The practice was common in BUGS
@@ -314,7 +377,7 @@ reasonable posterior values, and unlike the symmetric wide normal
 priors, can have the profound effect of skewing posteriors; see
 @Gelman:2006 for examples and discussion.
 
-### Truncated Priors {-}
+### Truncated Priors 
 
 If a variable is declared with a lower bound of zero, then assigning
 it a normal prior in a Stan model produces the same effect as
@@ -349,7 +412,7 @@ truncation point is a parameter, the truncation cannot be dropped,
 because the normal CDF term will not be a constant.
 
 
-### Weakly Informative Priors {-}
+### Weakly Informative Priors 
 
 Typically a researcher will have some knowledge of the scale of the
 variables being estimated.  For instance, if we're estimating an
@@ -376,7 +439,7 @@ the prior probability mass is outside the range of the expected
 answer, which can overwhelm the inferences available from a small data
 set.
 
-### Bounded Priors {-}
+### Bounded Priors 
 
 Consider the women's height example again.  One way to formulate a
 proper prior is to impose a uniform prior on a bounded scale.  For
@@ -408,7 +471,7 @@ without such constraints, or boundary-avoid priors should be used (see
 the [hierarchical priors section](#hierarchical-priors.section).)
 
 
-### Fat-Tailed Priors and Default Priors {-}
+### Fat-Tailed Priors and Default Priors 
 
 A reasonable alternative if we want to accommodate outliers is to use a
 prior that concentrates most of mass around the area where values are
@@ -424,7 +487,7 @@ implicitly in Stan) a reasonable default choice for scale parameters
 
 
 
-### Informative Priors {-}
+### Informative Priors 
 
 Ideally, there will be substantive information about a problem that
 can be included in an even tighter prior than a weakly informative
@@ -433,7 +496,7 @@ posterior of other data, it may come from meta-analysis, or it may
 come simply by soliciting it from domain experts.  All the goodness of
 weakly informative priors applies, only with more strength.
 
-### Conjugacy {-}
+### Conjugacy 
 
 Unlike in Gibbs sampling, there is no computational advantage to
 providing conjugate priors (i.e., priors that produce posteriors in
@@ -447,4 +510,105 @@ parameters, which can lead to efficiency gains.
 
 Neither the Hamiltonian Monte Carlo samplers or the optimizers make
 use of conjugacy, working only on the log density and its derivatives.
+
+
+### Background Reading {-}
+
+See @Gelman:2006 for an overview of choices for priors for
+scale parameters, @ChungEtAl:2013 for an overview of choices
+for scale priors in penalized maximum likelihood estimates, and
+@GelmanJakulinPittauEtAl:2008 for a discussion of prior choice
+for regression coefficients.
+
+
+
+### Example : Problems with so-called noninformative priors, excluding prior information {-}
+Say you have a single parameter $\theta$ which we estimate using an
+experiment which returns an estimate $y$.  For simplicity, assume the
+estimate is unbiased, normally distributed, and with known standard
+deviation that happens to equal 1.  Thus, the data model is:
+$$
+y \sim \mbox{normal}(\theta,1).
+$$
+Now suppose you perform Bayesian inference using a uniform prior on
+$\theta$.  Then your posterior distribution is simply (see, for
+example, chapter 2 of _Bayesian Data Analysis_),
+$$
+\theta|y \sim \mbox{normal}(y,1).
+$$
+
+OK, fine.  Now suppose your estimate happens to be $y=1$.  There are
+two ways of thinking about this:
+
+* The observed data, 1 standard error away from 0, is completely
+  consistent with a true value of $\theta=0$, or of low values of
+  $\theta$ that could be either positive or negative.  From our usual
+  statistical perspective, we would say that the data are consistent
+  with pure noise, and we cannot learn much from these data alone.
+
+* From the Bayesian posterior distribution, we can compute that
+  $\mbox{Pr}(\theta>0) = 0.84$ (in R, `pnorm(q = 0, mean = 1, sd = 1, lower.tail = F)`), thus you should be
+  willing to bet with 5-to-1 odds that $\theta$ is positive.
+
+This seems wrong, the idea that something recognizable as pure noise
+can lead to 5:1 posterior odds.
+
+The problem is coming from the prior distribution. We can see this in
+two ways. First, just directly, effects near zero are more common than
+large effects.
+
+Jakulin et al. (2008) argue that logistic regression coefficients are
+usually less than 1. So let's try combining normal(1,1) data with a
+Cauchy(0,1) prior. It's easy enough to do in Stan:
+
+```
+data {
+  real y;
+}
+parameters {
+  real theta;
+}
+model {
+  theta ~ cauchy (0, 1);
+  y ~ normal(theta, 1);
+}
+```
+
+If we fit this model supplying data $y=1$, 2000 iterations and 4 chains, and then from the resulting
+simulations compute the posterior probability that $\theta > 0$, we
+get 0.77, that is, roughly a 3:1 posterior probability that the effect
+is positive.
+
+Just to check that we're not missing anything, let's re-run using the
+flat prior. New Stan model:
+
+```
+data {
+  real y;
+}
+parameters {
+  real theta;
+}
+model {
+  y ~ normal (theta, 1);
+}
+```
+and re-run with the same R code. This time, indeed, 84% of the posterior simulations of $\theta$ are greater than 0.
+
+So far so good. Although one might argue that the posterior probability of 0.77 (from the inference given the unit Cauchy prior) is still too high. Perhaps we want a stronger prior? This sort of discussion is just fine. If you look at your posterior inference and it doesn't make sense to you, this "doesn't make sense" corresponds to additional prior information you haven't included in your analysis.
+
+OK, so that's one way to consider the unreasonableness of a noninformative prior in this setting. It's not so reasonable to believe that effects are equally likely to be any size. They're generally more likely to be near zero.
+
+The other way to see what's going on with this example is to take that flat prior seriously. Suppose theta really could be just about anything---or, to keep things finite, suppose you wanted to assign theta a uniform prior distribution on $[-1000,1000]$, and then you gather enough data to estimate $\theta$ with a standard deviation of 1. Then, a priori, you're nearly certain to gather very very strong information about the sign of $\theta$. To start with, there's a 0.998 chance that your estimate will be more than 2 standard errors away from zero so that your posterior odds about the sign of $\theta$ will be at least 20-to-1. And there's a 0.995 chance that your estimate will be more than 5 standard errors away from zero.
+
+So, in your prior distribution, this particular event---that $y$ is so close to zero that there is uncertainty about $\theta$'s sign---is extremely unlikely. And it would be irrelevant that $y$ is not statistically significantly different from 0.
+
+Modeling can be difficult. In some settings the data are strong and prior information is weak, and it's not really worth the effort to think seriously about what external knowledge we have about the system being studied. Often, though, we do know a lot, and we're interested in various questions where data are sparse, and we could be putting more effort into quantifying our prior distribution.
+
+Upsetting situations---for example, the estimate of $1 \pm 1$ which leads to a seemingly too-strong claim of 5-to-1 odds in favor of a positive effect---are helpful in that they can reveal that we have prior information that we have not yet included in our models.
+
+
+
+
+
 
