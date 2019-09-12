@@ -1,0 +1,13 @@
+# Approximate Computations
+
+In most of this book we do full Bayesian inference using simulations from NUTS.  For big problems, or to connect to other statistical methods, it can make sense to use approximate algorithms.  Here are some approximate algorithms:
+
+* Maximum likelihood, penalized maximum likelihood, and posterior mode (fit using Stan optimizer)
+
+* Variational Bayes (fit using ADVI)
+
+* Laplace approximation (not currently in Stan)
+
+* Expectation propagation (not currently in Stan)
+
+* Marginal approximation (not currently in Stan)

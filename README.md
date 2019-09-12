@@ -1,5 +1,12 @@
 This is the repository for the book *Bayesian Workflow Using Stan* (working title). The book is in its early stages of development so the content on the master branch may change substantially.
 
+### Rules for working on workflow
+
+ * _Branch_ (on a well named branch) and then submit a pull request for merging.
+ * At **all times** the main branch should compile. This is required for merging.
+ * Keep a list of packages that are needed to compile the book and add to it if you add a package
+ 
+
 ### Directory Structure
 
 * `*.Rmd` files: basic text
@@ -26,7 +33,7 @@ In RStudio: to build the project, open `index.Rmd` in RStudio and click `knit`
 
 First, you will need to install `pandoc` and `pandoc-citeproc` in
 addition to the `bookdown` package in R.  After that, it can be built
-from within R in this directory using `bookdown::render('index.Rmd')`
+from within R in this directory using `bookdown::render_book('index.Rmd')`
 or from the shell using `./build.sh` to build both PDF and HTML
 versions.
 
@@ -58,8 +65,6 @@ mandated by content
     - int<lower = 0> N;  # Put in the lower bound
     - for (n in 1:N); # Not:  for (i in 1:n);
     - foo_bar # Underscores rather than dots or CamelCase
-
-* No R/Python code in the finished book except in appendix
 
 * All Stan code should be best practice except when explaining
   something, in which case we should explicitly show the best-practice

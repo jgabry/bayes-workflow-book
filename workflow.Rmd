@@ -1,3 +1,7 @@
+<!-- 
+NOTE: Don't edit this section until @jgabry merges new version 
+--> 
+
 # Workflow in Action
 
 In this chapter we go through an artificial probem from beginning to

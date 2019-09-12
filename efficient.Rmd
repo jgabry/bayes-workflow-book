@@ -1,0 +1,60 @@
+# Efficient Stan Programming
+
+## Moving through the space of models
+
+Consider the model you want to fit for some applied problem.  Consider this model as living in a larger space, connected to simpler models in one direction and more complicated models in the other.  It makes sense to start with the simpler models to get your workflow going.  Later, once you can fit the model you want, you'll want to extend it to include new data and allow it to apply to new problems.
+
+So in general you should think of modeling and statistical analysis as a moving target.  This has some implications for statistical practice and computation.  First, given that know that we will be fitting many models, we don't want to take too long fitting each one.  There can be a time for running the computer overnight to fit a big model, but wait until you're sure, as there will be always one more problem you'll find, and one model you'll want to fit.  Second, you'll need tools for understanding the models you've fit, and for comparing fitted models, not just on aggregate predictive error (as discussed in chapter 7 of BDA3) but also to understand how they relate to each other.  For a simple example, in a regression we can see how the coefficients of a fitted model change when a new predictor is added.
+
+## Validated workflow
+
+As discussed this in the chapter on Simulating Data, we can check a model-fitting procedure by simulating fake data, fitting the model to data, and then comparing the resulting inferences with the assumed parameter values.  
+
+The next step is to keep track of the series of models being fit, which can require a series of Stan programs and a corresponding set of Stan calls in your R script.  It can sometimes work to encode multiple models in a single Stan program by including, as data, flags to include or exclude various components.
+
+## Clean code
+
+Part of computational efficiency is human efficiency.  Writing readable code takes a small amount of effort that can pay off later when you are trying to debug, expand, or simply understand a model you've already written, or when you want one of your models to be used by others.
+
+Some principles of clean Stan code:
+
+* Names of variables.  There can be a tradeoff between clarity and readability.  Regression coefficients called b0, b1, b2 can be hard to keep straight, but names such as coef_for_income can result in unwieldy expressions.  At least you can be aware of your choices.  Also, when expanding a model it can be helpful to occasionally reassess the structure of a model and rename variables.
+
+* Real estate.  Avoid blank lines and massive indentation.  There's some maximum number of lines you can view on your screen at once, and eliminating empty space in your code will allow you to see more of it at once.
+
+* more here . . .
+
+## Models
+
+* Identification
+
+* Priors
+
+## Parameterization
+
+* Scaling
+
+* Centered and noncentered parameterization for hierarchical models
+
+## Efficient computation
+
+* Vectorization
+
+* Pre-coded functions (logmix, log1plusx, bernoullilogit, logistic regression etc.)
+
+## What to do when your program is too slow
+
+* More efficient coding
+
+* Scaling
+
+* Reparameterization
+
+* Parallel computing
+
+* Simplify or change model
+
+* Stronger priors
+
+* Data subsetting
+
