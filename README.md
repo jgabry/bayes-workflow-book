@@ -66,8 +66,6 @@ mandated by content
     - for (n in 1:N); # Not:  for (i in 1:n);
     - foo_bar # Underscores rather than dots or CamelCase
 
-* No R/Python code in the finished book except in appendix
-
 * All Stan code should be best practice except when explaining
   something, in which case we should explicitly show the best-practice
   alternative
