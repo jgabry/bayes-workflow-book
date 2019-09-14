@@ -1,3 +1,5 @@
+(Note: moved from stan-dev/bayes-workflow-book)
+
 This is the repository for the book *Bayesian Workflow Using Stan* (working title). The book is in its early stages of development so the content on the master branch may change substantially.
 
 ### Rules for working on workflow
