@@ -13,7 +13,7 @@ The book is in its early stages of development so the content on the master bran
 ### Directory Structure
 
 * `*.Rmd` files: basic text
-* `_bookdown.yml`: book includes
+* `_bookdown.yml`: book includes (only Rmd files listed are included in the book)
 * `_output.yml`: output config
 * `bib/all.bib`: BibTeX file for references
 * `stan/*.Stan` : directory of Stan programs
