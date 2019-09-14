@@ -1,11 +1,12 @@
 (Note: moved from stan-dev/bayes-workflow-book)
 
-This is the repository for the book *Bayesian Workflow Using Stan* (working title). The book is in its early stages of development so the content on the master branch may change substantially.
+This is the repository for the book *Bayesian Workflow Using Stan* (working title). The book will have many authors. 
+The book is in its early stages of development so the content on the master branch will change substantially.
 
 ### Rules for working on workflow
 
- * _Branch_ (on a well named branch) and then submit a pull request for merging.
- * At **all times** the main branch should compile. This is required for merging.
+ * _Branch_ (on a well named branch) and then submit a pull request for merging into master.
+ * At **all times** the master branch should compile. This is required for merging.
  * Keep a list of packages that are needed to compile the book and add to it if you add a package
  
 
