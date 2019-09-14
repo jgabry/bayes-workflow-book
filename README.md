@@ -1,6 +1,7 @@
-(Note: moved from stan-dev/bayes-workflow-book)
+(Note: moved from `stan-dev/bayes-workflow-book`)
 
-This is the repository for the book *Bayesian Workflow Using Stan* (working title). The book will have many authors. 
+This is the repository for the book *Bayesian Workflow Using Stan* (working title). The book will have many authors.
+
 The book is in its early stages of development so the content on the master branch will change substantially.
 
 ### Rules for working on workflow
@@ -12,12 +13,12 @@ The book is in its early stages of development so the content on the master bran
 
 ### Directory Structure
 
-* `*.Rmd` files: basic text
-* `_bookdown.yml`: book includes (only Rmd files listed are included in the book)
+* `*.Rmd` files: book sections to potentially include (not all are currently included)
+* `_bookdown.yml`: book includes (only the Rmd files listed here are included in the book)
 * `_output.yml`: output config
-* `bib/all.bib`: BibTeX file for references
-* `stan/*.Stan` : directory of Stan programs
+* `stan/*.stan` : directory of Stan programs
 * `data/{*.R, *.rds}` : directory for data used by programs
+* `bibtex/all.bib`: BibTeX file for references
 * `programs/{*.R, *.stan}` : legacy programs from old manual (deprecated until
   they're moved into new style with R inline in .Rmd)
 
