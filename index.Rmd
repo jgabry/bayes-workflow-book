@@ -1,17 +1,24 @@
 ---
 knit: "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
-title: ""
-author: ""
-description: "Bayesian Workflow Using Stan, with examples and programming techniques."
-site: bookdown::bookdown_site
-cover-image: img/logo-tm.pdf
-documentclass: book
-classoption: oneside, openany
-#bibliography: [bibtex/all.bib]
+title: "Bayesian Workflow Using Stan"
+author: "Aki Vehtari, Rob Trangucci, Advait Rajagopal, Dan Simpson, Mitzi Morris, Andrew Gelman, Jonah Gabry, Bob Carpenter"
+date: "`r Sys.Date()`"
+documentclass: krantz
+# classoption: oneside, openany
+bibliography: [bibtex/all.bib]
 biblio-style: apalike
 link-citations: yes
-fontsize: 10pt
+colorlinks: yes
+graphics: yes
+lot: yes
+lof: yes
+fontsize: 11pt
+mainfont: palatino
 monofont: "Lucida Console"
+% monofontoptions: "Scale=0.8"
+site: bookdown::bookdown_site
+description: "Bayesian workflow using Stan, with examples and programming techniques."
+cover-image: img/logo-tm.pdf
 subparagraph: yes
 ---
 
@@ -33,7 +40,7 @@ By _workflow_ we mean the fuller process of data analysis, including fitting mul
 * Using Stan
 
 _Stan_ is an open-source computer
-program for Bayesian inference and simulation. 
+program for Bayesian inference and simulation.
 
 * R edition
 
