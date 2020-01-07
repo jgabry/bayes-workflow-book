@@ -1,20 +1,20 @@
-% mostly borrowed from: https://github.com/rstudio/rmarkdown-book/blob/master/latex/preamble.tex
-% with some stuff from: https://github.com/hadley/adv-r/blob/master/latex/preamble.tex
+% see: https://github.com/rstudio/rmarkdown-book/blob/master/latex/preamble.tex
 
-% From Rmarkdown-book
--------------------------------------
 \usepackage{booktabs}
 \usepackage{longtable}
 \usepackage[bf,singlelinecheck=off]{caption}
 
 \usepackage{framed,color}
-\definecolor{shadecolor}{RGB}{242, 242, 242}  % values from Advanced R
+\definecolor{shadecolor}{RGB}{248,248,248}
 
 \renewcommand{\textfraction}{0.05}
 \renewcommand{\topfraction}{0.8}
 \renewcommand{\bottomfraction}{0.8}
 \renewcommand{\floatpagefraction}{0.75}
-\raggedbottom
+
+\renewenvironment{quote}{\begin{VF}}{\end{VF}}
+\let\oldhref\href
+\renewcommand{\href}[2]{#2\footnote{\url{#1}}}
 
 \ifxetex
   \usepackage{letltxmacro}
@@ -65,20 +65,4 @@
 }
 \makeatother
 
-% From Advanced R
-% --------------------------------------------
-\renewcommand{\figurename}{Figure}
-\renewcommand{\tablename}{Table}
-\renewenvironment{quote}%
-  {\list{}{\leftmargin=0.5in\rightmargin=0.5in}\item[]\begin{itshape}}%
-  {\end{itshape}\endlist}
-\let\oldhref\href
-\renewcommand{\href}[2]{#2\footnote{\url{#1}}}
-
-% No widow lines
-\widowpenalty=10000
-\clubpenalty=10000
-
-% From Rmarkdown-book
--------------------------------------
 \frontmatter

@@ -14,12 +14,12 @@ We're aiming this book at three sorts of readers:
 
 ### Bayesian inference and Stan {-}
 
-Bayesian inference is a statistical power tool.  It enables you to use prior knowledge and observed data to build a probability model. Your data and unknowns are embedded in this probability model and you construct a "posterior distribution". 
+Bayesian inference is a statistical power tool.  It enables you to use prior knowledge and observed data to build a probability model. Your data and unknowns are embedded in this probability model and you construct a "posterior distribution".
 
-The prior distribution represents the knowledge that you have about the world from past experiments, research or simply scientific truths. The observed or collected data is represented by the ubiquitous likelihood function. We then employ Bayes' rule to combine the prior and likelihood and approximate the posterior distribution. Once you have this posterior you can make inferences and predictions about everything. A noteworthy feature of the parameter of interest in the Bayesian framework is that just like the data the parameter too has its own distribution and is therefore probabilistic.  
+The prior distribution represents the knowledge that you have about the world from past experiments, research or simply scientific truths. The observed or collected data is represented by the ubiquitous likelihood function. We then employ Bayes' rule to combine the prior and likelihood and approximate the posterior distribution. Once you have this posterior you can make inferences and predictions about everything. A noteworthy feature of the parameter of interest in the Bayesian framework is that just like the data the parameter too has its own distribution and is therefore probabilistic.
 
 Stan is a platform for statistical modeling and high-performance
-statistical computation. Given the prior and the data or likelihood function, Stan uses computational methods to approximate the posterior distribution. 
+statistical computation. Given the prior and the data or likelihood function, Stan uses computational methods to approximate the posterior distribution.
 
 A big challenge for applied Bayesian inference is computation and scalability. Converting the mathematical expression of the posterior distribution into specific inferences or predictions (e.g the probability that some coefficient of interest is postive or the 90% predictive interval for some future outcome) can be difficult. For even moderately large or complex problems these quantities are expressed in terms of high-dimensional integrals with no closed-form expressions. This usually means for most problems it is extremely difficult or impossible to obtain an analytical solution or expression for the posterior distribution. Stan helps us get around this problem using computational methods that allow us to sample from a distribution that is proportional to the posterior. Scaling up this computation to larger, multi-dimensional problems however, remains a challenge.
 
@@ -140,7 +140,7 @@ In this program the variables `y` and `x` are vectors of length
 are scalar values which are estimated jointly by the model.
 
 In order to run the program, you must provide inputs for all
-variables declared in the data block. 
+variables declared in the data block.
 Therefore we need to simulate some data
 for the vector length `N` and a vector of values for both
 `x` and `y` using known values for model parameters
@@ -185,7 +185,7 @@ we have reason to trust our computation.
 In the [workflow chapter](#workflow-in-action) we show more ways to
 assess parameter recovery.
 
-## Bayesian workflow for model checking and model improvement {-}
+## Bayesian workflow for model checking and model improvement
 
 In Bayesian inference we make a sort of deal with the devil: we commit
 to a strong model, and from this we get strong inferences.  But, as
@@ -244,7 +244,7 @@ data generating process encoded by our model.
 The [workflow chapter](#workflow-in-action) of this book
 includes several case studies to give some
 sense of Bayesian modeling on some fairly simple problems.
-Many more case studies are available on the Stan website at: 
+Many more case studies are available on the Stan website at:
 http://mc-stan.org/users/documentation/case-studies
 and in the StanCon conference proceedings at:
 https://github.com/stan-dev/stancon_talks.
@@ -275,7 +275,7 @@ and parameter estimates and uncertainties
 10.  Directions for model expansion
 
 
-## Writing a Stan program {-}
+## Writing a Stan program
 
 When you write a Stan program, you're
 writing C++ code that gives instructions for computing an "objective
@@ -390,7 +390,7 @@ tilde.
 ### Interpreting the objective function as the log posterior density {-}
 
 The objective function computed by Stan is interpreted as being the log posterior density of the parameters plus some arbitrary constant. The posterior density here is denoted by $p(\theta|y)$ which is the probability distribution of the parameter(s) of interest conditional on the data. Mathematically if the objective function computed by Stan is $g(\theta,y)$, then the implied posterior density is $p(\theta|y)=\frac{1}{Z(y)}e^{g(\theta,y)}$, where $Z(y)=\int
-g(\theta,y)d\theta$. $Z(y)$ denotes the normalizing constant. To perform inference using this posterior distribution it is not necessary to actually evaluate the integral $Z$; it is enough to compute $g$ and obtain a distribution that is proportional to the posterior density. 
+g(\theta,y)d\theta$. $Z(y)$ denotes the normalizing constant. To perform inference using this posterior distribution it is not necessary to actually evaluate the integral $Z$; it is enough to compute $g$ and obtain a distribution that is proportional to the posterior density.
 
 
 ### Stan's fitting algorithms {-}
@@ -411,7 +411,7 @@ algorithms: Hamiltonian Monte Carlo (HMC) and the no-U-turn sampler
 (NUTS).  For background on HMC, see Chapter 12 of _Bayesian Data
 Analysis_.  NUTS is an adaptive version of HMC
 and is the algorithm that we use by default when fitting models in Stan.
-For more information on NUTS 
+For more information on NUTS
 see Chapter "MCMC Sampling" of the _Stan Reference Manual_.
 When running NUTS (or HMC, or any other sampling algorithm),
 the output of Stan is a list of posterior simulations.

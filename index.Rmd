@@ -1,6 +1,6 @@
 ---
 knit: "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
-title: "Bayesian Workflow Using Stan"
+title: "Bayesian Workflow Using Stan (R Edition)"
 author: "Aki Vehtari, Rob Trangucci, Advait Rajagopal, Dan Simpson, Mitzi Morris, Andrew Gelman, Jonah Gabry, Bob Carpenter"
 date: "`r Sys.Date()`"
 documentclass: krantz
@@ -15,7 +15,7 @@ lof: yes
 fontsize: 11pt
 mainfont: palatino
 monofont: "Lucida Console"
-% monofontoptions: "Scale=0.8"
+# monofontoptions: "Scale=0.8"
 site: bookdown::bookdown_site
 description: "Bayesian workflow using Stan, with examples and programming techniques."
 cover-image: img/logo-tm.pdf
@@ -24,7 +24,7 @@ subparagraph: yes
 
 <img style="float:right; margin: -2em 0em 4em 4em" src="img/logo-tm.png" width="225" alt="Stan logo" />
 
-# Bayesian Workflow Using Stan (R edition) {-}
+# Overview
 
 This book is an example-driven introduction to Bayesian modeling and inference using Stan, a platform for statistical modeling and high-performance
 statistical computation.
@@ -51,7 +51,7 @@ focus is on Stan, not the R code.  We hope soon to have translations for this bo
 
 * Copyright, Trademark, and Licensing
 
-This book is copyright 2011--2019, Stan Development Team and their
+This book is copyright 2011--2020, Stan Development Team and their
 assignees.  The text content is distributed under the [CC-BY ND 4.0
 license](https://creativecommons.org/licenses/by-nd/4.0/legalcode).
 The user's guide R and Stan programs are distributed under the [BSD

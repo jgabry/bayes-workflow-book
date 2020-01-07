@@ -3,11 +3,10 @@ all:
 	BOOKDOWN_FULL_PDF=false Rscript --quiet _render.R
 
 pdf:
-	Rscript _render.R "bookdown::pdf_book" &&\
-	mv _book/rmarkdown.pdf _book/rmarkdown-full.pdf
+	Rscript _render.R "bookdown::pdf_book"
 
 gitbook:
-	Rscript --quiet _render.R "bookdown::gitbook"
+	Rscript _render.R "bookdown::gitbook"
 
 pdf2:
 	BOOKDOWN_FULL_PDF=false Rscript --quiet _render.R "bookdown::pdf_book"

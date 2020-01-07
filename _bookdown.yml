@@ -1,25 +1,25 @@
 new_session: yes
+delete_merged_file: yes
 before_chapter_script: "before-chapter.R"
-delete_merged_file: TRUE
+repo: https://github.com/jgabry/bayes-workflow-book
 rmd_files: [
   "index.Rmd",
-
-  "part1.Rmd", 
+  "part1.Rmd",
   "introduction.Rmd",
   "simulated-data.Rmd",
-  "modeling-as-software.Rmd",
-  "evaluation-visualization.Rmd",
-  "other-algorithms.Rmd",
-
-  "part2.Rmd",
-  "basic-examples.Rmd",
-  "simple-examples.Rmd",
-  "efficient.Rmd",
-  "workflow.Rmd",
-
-  "part3.Rmd",
-  "stan-doc.Rmd",
-  "bda-review.Rmd",
-  "bda-whats-missing.Rmd",
-  "how-to-case-studies.Rmd"
+#  "modeling-as-software.Rmd",
+#  "evaluation-visualization.Rmd",
+#  "other-algorithms.Rmd",
+#
+#  "part2.Rmd",
+#  "basic-examples.Rmd",
+#  "simple-examples.Rmd",
+#  "efficient.Rmd",
+#  "workflow.Rmd",
+#
+#  "part3.Rmd",
+#  "stan-doc.Rmd",
+#  "bda-review.Rmd",
+#  "bda-whats-missing.Rmd",
+#  "how-to-case-studies.Rmd"
 ]

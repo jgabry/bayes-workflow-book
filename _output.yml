@@ -2,11 +2,14 @@ bookdown::gitbook:
   code folding: hide
   toc_depth: 1
   css: stan-manual.css
+  download: [pdf]
   config:
     search: yes
-    sharing: null
-    download: null
-    edit: null
+    sharing:
+      github: yes
+      facebook: no
+    download: [pdf]
+    edit: https://github.com/jgabry/bayes-workflow-book/edit/master/%s
     toolbar:
       position: static
     fontsettings:
@@ -18,10 +21,19 @@ bookdown::gitbook:
       scroll_highlight: wo yes
       before: |
         <li style="font-size:110%; font-weight:400; font-family: Verdana, Helvetica, sans; line-height:1.4; margin: 0.5em 0 0 1em"> </li>
-      after: null
+      after: |
+        <li><a href="https://bookdown.org" target="_blank">Published with bookdown</a></li>
 
-subparagraph: yes
 bookdown::pdf_book:
   latex_engine: "pdflatex"
   includes:
-    in_header: header.tex
+    in_header: latex/preamble.tex
+    before_body: latex/before_body.tex
+    after_body: latex/after_body.tex
+  keep_tex: yes
+  citation_package: natbib
+  pandoc_args: ["--top-level-division=chapter", --wrap=none]
+  toc_depth: 2
+  number_sections: yes
+  toc_appendix: yes
+  highlight_bw: yes
