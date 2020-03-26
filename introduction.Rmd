@@ -35,7 +35,7 @@ general problems in Bayesian inference.
 
 So: since the 1970s--1980s, methods have been developed to perform
 approximate computations for Bayesian inferences that would otherwise
-REQUIRE INTRACTABLE INTERVALS.  These approximations needed to be
+require intractable integrals. These approximations needed to be
 developed one model at a time.  In the 1990s--2000s, the WinBugs
 software was developed, which allowed automatic computation for a
 large class of Bayesian models.  WinBugs (and its successors, OpenBugs
@@ -375,7 +375,8 @@ We can also include lines in the code that do _not_ augment the
 objective function.  For example:
 ```
 model {
-  // expected value of y when x=2 y ~ normal(a + b * x, sigma);
+  y ~ normal(a + b * x, sigma);
+  // expected value of y when x=2
   real a_shifted = a + 2 * b;
   a_shifted ~ normal(0, 1);
   b ~ normal(0, 1);
@@ -389,8 +390,16 @@ tilde.
 
 ### Interpreting the objective function as the log posterior density {-}
 
-The objective function computed by Stan is interpreted as being the log posterior density of the parameters plus some arbitrary constant. The posterior density here is denoted by $p(\theta|y)$ which is the probability distribution of the parameter(s) of interest conditional on the data. Mathematically if the objective function computed by Stan is $g(\theta,y)$, then the implied posterior density is $p(\theta|y)=\frac{1}{Z(y)}e^{g(\theta,y)}$, where $Z(y)=\int
-g(\theta,y)d\theta$. $Z(y)$ denotes the normalizing constant. To perform inference using this posterior distribution it is not necessary to actually evaluate the integral $Z$; it is enough to compute $g$ and obtain a distribution that is proportional to the posterior density. 
+The objective function computed by Stan is interpreted as being the log
+posterior density of the parameters plus some arbitrary constant. The posterior
+density here is denoted by $p(\theta|y)$ which is the probability distribution
+of the parameter(s) of interest conditional on the data. Mathematically, if the
+objective function computed by Stan is $g(\theta,y)$, then the implied posterior
+density is $p(\theta|y)=\frac{1}{Z(y)} \exp(g(\theta,y))$, where $Z(y)=\int
+\exp(g(\theta,y)) d\theta$ denotes the normalizing constant. To perform
+inference using this posterior distribution, it is not necessary to actually
+evaluate the integral $Z$; it is enough to compute $g$ and obtain a distribution
+that is proportional to the posterior density.
 
 
 ### Stan's fitting algorithms {-}
@@ -472,12 +481,14 @@ good news.)
 
 Interpreting the objective function as the log posterior density, the
 result of the optimizer is the posterior mode.  If the model has a
-uniform prior distribution, then this is also the maximum likelihood
-estimate.
+uniform prior distribution over all model parameters, then this is 
+also the maximum likelihood estimate.
 
 In classical statistics, the maximum likelihood is accompanied by an
 uncertainty estimate based on the curvature of the log-likelihood
-function; see Sections 4.1 and 13.3 of _Bayesian Data Analysis_ for a
+function assuming an approximately normal sampling distribution
+of the estimators; 
+see Sections 4.1 and 13.3 of _Bayesian Data Analysis_ for a
 corresponding Bayesian interpretation based on the posterior mode.
 There are times when this mode-based approximation makes
 sense---notably when datasets are so large that full Bayesian
@@ -524,7 +535,7 @@ step, Stan computes the gradient of the objective function, which is
 used in the "leapfrog algoritm" to determine the direction in which
 the algorithm moves (see Section 12.4 of _Bayesian Data Analysis_ and
 the "MCMC Sampling" chapter of the _Stan Reference Manual_).
-An iteration might have tens or hundreds of steps.
+A iteration might have tens or hundreds of steps.
 The information from each step is not saved by Stan; what is
 returned is the value of the parameters at the end of each iteration.
 
@@ -564,7 +575,8 @@ processors.
 
 For optimization or distributional approximation, we literally want
 the different chains to converge to the same spot.  For sampling, we
-want the different chains to trace out the same distribution, which we
+want the different chains to mix well, that is, 
+to trace out the same distribution, which we
 measure by comparing the simulations from different chains to each
 other.  For each parameter or quantity of interest saved, Stan reports
 "R-hat," a numerical measure which is larger than 1 when chains have
@@ -594,7 +606,7 @@ into _blocks_:
   Explanations of all the types are in the chapter on
   [matrices, vectors, and arrays](#matrices-vectors-and-arrays) of the Stan manual.
 
-- Transformed data.  These are mathematical operations that are
+- Transformed data.  These are mathematical operations based on data that are
   performed once when the Stan program is called.
 
 - Parameters.  These are the unknown quantities that are estimated
@@ -610,6 +622,8 @@ into _blocks_:
   function is computed.  As discussed above, at each step, Stan
   computes the objective function by starting at zero and then adding
   to it with each statement that includes "target +=" or "~".
+  Quantities declared in the model block are not saved for usage
+  outside of the model block.
 
 - Generated quantities.  These are computed at the end of each
   iteration (not each step) and are saved.
@@ -669,7 +683,7 @@ hierarchical models.
 In this book, we will work with data and fit Stan models using the
 Rstan package in R, as demonstrated above.  Our focus, though, is on
 statistical modeling and writing Stan programs, so in most of the book
-we suppress the R.  All the code is available (see below) so that you
+we suppress the R code.  All the code is available (see below) so that you
 can reproduce any of the computations we perform.
 
 ### Other Stan interfaces: Python, Julia, command line, and more {-}

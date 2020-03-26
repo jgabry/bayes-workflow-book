@@ -217,13 +217,13 @@ normal distribution centered at 0 with some standard deviation
 $\sigma$.
 
 The probability the ball goes in the hole is then the probability that
-the angle is less than the threshold; that is,
-$2\Phi(\sin^{-1}((R-r)/x)) - 1$, where $\Phi$ is the cumulative normal
+the angle is less than the threshold, that is,
+$2\Phi(\sin^{-1}((R-r)/x) / \sigma) - 1$, where $\Phi$ is the cumulative normal
 distribution function.
 
 Our model then has two parts:
 $$y_j \sim \mbox{binomial}(n_j, p_j)$$
-$$p_j = 2\Phi(\sin^{-1}((R-r)/x)) - 1 , \mbox{ for } j=1,\dots, J.$$
+$$p_j = 2\Phi(\sin^{-1}((R-r)/x) / \sigma) - 1 , \mbox{ for } j=1,\dots, J.$$
 
 Here is the model in Stan:
 
@@ -329,7 +329,7 @@ following steps:
 - Setting up a model in which different people rate different movies,
   with systematic differences between who rates which movies.
 
-- Espanding the model to allow for the possibility that more people
+- Expanding the model to allow for the possibility that more people
   see, and rate, movies that are more popular.
 
 For each step, we set up a model, simulate fake data from that model,
@@ -343,9 +343,9 @@ movies, with any randomly selected rating for movie $j$ being drawn
 from a normal distribution with mean $\theta_j$ and standard deviation
 $\sigma$.
 
-For simplicity, we're pretending radings are continuous unbounded
+For simplicity, we're pretending ratings are continuous unbounded
 numbers (rather than integers from 0 through 5) and that the
-distributions of ratings for the teo movies differ only in their mean,
+distributions of ratings for the two movies differ only in their mean,
 not their variance.  We're not allowing, for example, a polarizing
 movie that you either love or hate.  The ratings distribution for any
 movie is assumed to be bell-shaped.  Again, we can later go back and
@@ -406,8 +406,8 @@ Here is the result:
 print(fit_1)
 ```
 
-The estimated population average popularity is 3.6 for the first movie
-and 4.0 for the second.  We hae more information on the second movie,
+The estimated population average popularity is 3.7 for the first movie
+and 4.0 for the second.  We have more information on the second movie,
 so we can more precisely estimate it as truly meriting 4 stars in the
 public assessment: the 50% posterior interval for $\theta_2$ is $[3.9,
 4.1]$.  In contrast, we have a lot more uncertainty about $\theta_1$,
@@ -435,9 +435,10 @@ normal distribution with mean 3 and standard deviation 0.5 (so that
 the movies' true popularities are mostly between 2 and 4 on that 0--5
 scale), and then sample continuous individual ratings $z_i$ for each
 movie $j[i]$ from a normal distribution with mean $\theta_{j[i]}$ and
-standard deviation 2: $$ \theta_j \sim \mbox{normal}(3.0, 0.5), \mbox{
-for } j=1,\dots,J \\ z_i \sim \mbox{normal}(\theta_{j[i]}, 2.0),
-\mbox{ for } i=1,\dots,n.  $$ To keep things simple, we will ignore
+standard deviation 2: 
+$$ \theta_j \sim \mbox{normal}(3.0, 0.5), \mbox{ for } j=1,\dots,J$$
+$$ z_i \sim \mbox{normal}(\theta_{j[i]}, 2.0), \mbox{ for } i=1,\dots,n. $$ 
+To keep things simple, we will ignore
 the fact that the ratings are constrained to be between 0 and 5;
 instead, we will simulate continuous ratings on an unbounded scale.
 It is not difficult in Stan to model ordered discrete responses; see
@@ -492,7 +493,7 @@ for (j in 1:J) {
 mtext("Comparing parameters theta_j to their posterior inferences", side=3)
 ```
 
-Roughly half the 50% intervals and 95% of the 95% intervals contain
+Roughly half of the 50% intervals and 95% of the 95% intervals contain
 the true parameter value, which is about what we would expect to see,
 given that we have simulated data from the model we are fitting.
 
@@ -538,7 +539,6 @@ differences between raters.
 We can model rater effects using what is called an _item-response
 model_, the simplest form of which looks like this, for a numerical
 rating $y_i$ of movie $j[i]$ by rater $k[i]$,
-
 $$
 y_i \sim \mbox{normal}(a_{j[i]} - b_{k[i]}, \sigma_y),
 $$
@@ -561,15 +561,16 @@ Our full model looks like this:
 $$
 y_i \sim \mbox{normal}(a_{j[i]} - b_{k[i]}, \sigma_y),
   \mbox{ for } i=1,\dots, N
-\\
+$$
+$$
 a_j \sim \mbox{normal}(\mu_a, \sigma_a), \mbox{ for } j=1,\dots, J
-\\
+$$
+$$
 b_k \sim \mbox{normal}(0, \sigma_b), \mbox{ for } k=1,\dots, K.
 $$
 
 We also need prior distributions for the as-yet-unmodeled parameters
 $\mu_a, \sigma_a, \sigma_b, \sigma_y$.
-
 But before setting that up, we re-express the model in a way that will
 be generally useful:
 
@@ -578,10 +579,12 @@ y_i
   \sim \mbox{normal}(\mu + \sigma_a*\alpha_{j[i]} - \sigma_b*\beta_{k[i]},
                      \sigma_y),
   \mbox{ for } i=1,\dots, N
-\\
+$$
+$$
 \alpha_j \sim \mbox{normal}(0, 1),
   \mbox{ for } j=1,\dots, J
-\\
+$$
+$$
 \beta_k \sim \mbox{normal}(0, 1),
   \mbox{ for } k=1,\dots, K.
 $$
@@ -589,8 +592,8 @@ This new version, sometimes called the _non-centered
 parameterization_, is convenient because it separates the scaled and
 unscaled parameters; also it can have certain computational
 advantages, as discussed here: [point to Mike Betancourt's case
-study?].  The new models are equivalent, with the movle quality
-parameters being expressed as, $a_j = \mu + \sigma_{\alpha}*\alpha_j$.
+study?].  The new models are equivalent, with the movie quality
+parameters being expressed as $a_j = \mu + \sigma_{\alpha}*\alpha_j$.
 
 And now we can add prior distributions.  We will start with uniform
 priors (subject to the constraint that $\sigma_a$, $\sigma_b$, and
@@ -604,7 +607,7 @@ print_file("stan/ratings_3.stan")
 As usual, we'll check it by simulating fake data, then fitting the
 model in Stan and checking that the parameters are recovered.
 
-We'll start by simulating data from $J=40$ movkes and $K=100$ raters,
+We'll start by simulating data from $J=40$ movies and $K=100$ raters,
 with each person rating each movie, and with parameters $\mu=3$ (thus,
 an average rating of 3 for all movies and all raters), $\sigma_a=0.5$,
 $\sigma_b=0.5$ (thus, the same amount of variation in raters'
@@ -820,7 +823,7 @@ a_post <- extract(fit_3a)$a
 a_post_median <- apply(a_post, 2, median)
 ```
 
-We then plot true movie quality (the parameter , first versus raw
+We then plot true movie quality (the parameter $\alpha_j$), first versus raw
 average rating, then versus the model-based estimate:
 
 ```{r}
@@ -1370,12 +1373,15 @@ print_file("stan/mixture.stan")
 
 We now run the program and display the results:
 
-```{r}
+```{r, results=FALSE}
 y <- slope
 K <- 3
 mu <- c(0,-1,1)
 data <- list(y=y, K=K, mu=mu)
 mix <- stan("stan/mixture.stan", data=data)
+```
+
+```{r}
 print(mix)
 ```
 
