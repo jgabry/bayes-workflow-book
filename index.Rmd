@@ -1,5 +1,5 @@
 ---
-knit: "bookdown::render_book('index.Rmd', 'bookdown::gitbook')"
+knit: "bookdown::render_book('index.Rmd', 'bookdown::pdf_book')"
 title: ""
 author: ""
 description: "Bayesian Workflow Using Stan, with examples and programming techniques."
@@ -19,16 +19,21 @@ subparagraph: yes
 
 # Bayesian Workflow Using Stan (R edition) {-}
 
-This book is an example-driven introduction to Bayesian modeling and inference using Stan, a platform for statistical modeling and high-performance
-statistical computation.
+This book is an example-driven introduction to Bayesian modeling and inference
+using Stan, a platform for statistical modeling and high-performance statistical
+computation.
 
 * Bayesian
 
-_Bayesian inference_ is a framework for estimating parameters and constructing predictions given probability models and data. _Bayesian data analysis_ is the larger process of building, fitting, and checking probability models.
+_Bayesian inference_ is a framework for estimating parameters and constructing
+predictions given probability models and data. _Bayesian data analysis_ is the
+larger process of building, fitting, and checking probability models.
 
 * Workflow
 
-By _workflow_ we mean the fuller process of data analysis, including fitting multiple models to data and figuring out how to include more information in your model.
+By _workflow_ we mean the fuller process of data analysis, including fitting
+multiple models to data and figuring out how to include more information in your
+model.
 
 * Using Stan
 
@@ -37,10 +42,10 @@ program for Bayesian inference and simulation.
 
 * R edition
 
-Stan can be run from
-R, Python, Julia, or other scientific/statistical software.  In the
-examples in this book, we set up data and run Stan from R, but our
-focus is on Stan, not the R code.  We hope soon to have translations for this book in Python and other languages.
+Stan can be run from R, Python, Julia, or other scientific/statistical software.
+In the examples in this book, we set up data and run Stan from R, but our focus
+is on Stan, not the R code.  We hope soon to have translations for this book in
+Python and other languages.
 
 * Copyright, Trademark, and Licensing
 

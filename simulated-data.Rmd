@@ -13,8 +13,9 @@ A Bayesian model has unmodeled data, parameters, and modeled data.  Generically
 we label the unmodeled data as $x$, the parameters as $\theta$, 
 and the modeled data as $y$.  In any given problem,
 though, $x$, $\theta$, and $y$ might have specific meanings, so you'll have to
-be careful with this.  The joint probability distribution is $p(y, \theta | x) =
-p(\theta|x)  p(y|\theta,x)$: the prior times the likelihood.
+be careful with this.  The joint probability distribution is 
+$p(y, \theta | x) = p(\theta|x)  p(y|\theta,x)$: the prior times the 
+likelihood.
 
 Simulating data is a stepwise process:
 
@@ -24,7 +25,8 @@ of problems for which you wish to fit your model.
 
 2. Simulate _parameters_ from the prior:  draw theta from $p(\theta|x)$.
 
-3. Simulate the _modeled data_ from the parameters:  draw $y$ from $p(y|\theta,x)$.
+3. Simulate the _modeled data_ from the parameters:  draw $y$ from
+$p(y|\theta,x)$.
 
 We don't always follow these steps exactly.  In particular, in step 2 we often
 set theta to some particular value rather than drawing it from the prior.  We
@@ -54,7 +56,8 @@ be positive)
 
 We set $N = 100$.
 
-We set $x$ by sampling $N$ independent values uniformly distributed between 0 and 10.
+We set $x$ by sampling $N$ independent values uniformly distributed between 0
+and 10.
 
 The above choices are arbitrary.  In general we would want the values to make
 sense in some context.  For that reason we often want a "cover story" for our
@@ -186,7 +189,8 @@ Now we go through the output:
   should approach the posterior standard deviation.  For most purposes
   we can ignore `se_mean`.
 
-* The next several columns, each ending with `%`, give quantiles of the simulations.
+* The next several columns, each ending with `%`, give quantiles of the 
+simulations.
 
 * The last two columns, `n_eff` and `Rhat` give the effective sample size and
   $\widehat{R}$. Typically we want $\widehat{R}$ to be less then 1.1
@@ -198,10 +202,9 @@ results to summarize the posterior distribution.
 
 ### Comparing fitted model to assumed parameter values {-}
 
-We can compare the
-posterior inferences to the assumed parameter values (here, $a=`r a`$, $b=`r b`$,
-and $\sigma=`r sigma`$).  These assumed values are roughly within the range of
-uncertainty of the inferences.
+We can compare the posterior inferences to the assumed parameter values (here,
+$a=`r a`$, $b=`r b`$, and $\sigma=`r sigma`$).  These assumed values are roughly
+within the range of uncertainty of the inferences.
 
 ## Hierarchical model
 
@@ -272,8 +275,8 @@ from the fitted model:
 mu_a <- median(extract(schools_fit)$mu)
 tau_a <- median(extract(schools_fit)$tau)
 ```
-It would also be fine to use approximate values such as `mu_a` = 10, `tau_a` = 5.
-Again, the suffix `_a` represents "assumed" values.
+It would also be fine to use approximate values such as `mu_a` = 10, 
+`tau_a` = 5. Again, the suffix `_a` represents "assumed" values.
 
 Once we have `mu` and `tau`, we should draw the vector `eta` from its prior
 distribution, which in this case is unit normal (see Stan code above); in R,

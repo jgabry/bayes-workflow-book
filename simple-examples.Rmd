@@ -467,7 +467,8 @@ Here is the result:
 print(fit_2)
 ```
 
-We can check the fit by plotting the posterior inferences against the true parameter values:
+We can check the fit by plotting the posterior inferences against the true 
+parameter values:
 
 ```{r}
 theta_post <- extract(fit_2)$theta
@@ -1330,9 +1331,12 @@ for (n in 1:N) {
 }
 ```
 
-Aha! The lines are fanning out from a common starting point. We'll fit
-a regression to each line and then summarize each line by its average
-slope.  This is not necessarily the most efficient way to estimate a slope from correlated data, but we will not be concerned about that, as our purpose here is to demonstrate decision analysis in the context of a fitted model, rather than to fit the model in an optimal way.
+Aha! The lines are fanning out from a common starting point. We'll fit a
+regression to each line and then summarize each line by its average slope.  This
+is not necessarily the most efficient way to estimate a slope from correlated
+data, but we will not be concerned about that, as our purpose here is to
+demonstrate decision analysis in the context of a fitted model, rather than to
+fit the model in an optimal way.
 
 ```{r}
 slope <- rep(NA, N)
@@ -1359,7 +1363,8 @@ OK, not much information in the se's. How about a histogram of the
 estimated slopes?
 
 ```{r}
-hist(slope, xlab="Slope", breaks=seq(floor(10*min(slope)), ceiling(10*max(slope)))/10)
+hist(slope, xlab="Slope", breaks=seq(floor(10*min(slope)), 
+                                     ceiling(10*max(slope)))/10)
 ```
 
 Based on the problem description, I'd expect to see distributions
@@ -1774,10 +1779,15 @@ Here is a graph of the true curve and the simulated data:
 
 ```{r}
 data_graph <- function(a, b, sigma, x, y) {
-  curve(a[1]*exp(-b[1]*x) + a[2]*exp(-b[2]*x), from=min(x), to=max(x), ylim=c(0, 1.05*max(y)), xlim=c(0, max(x)),
-     xlab="x", ylab="y", xaxs="i", yaxs="i", bty="l", main="Data and true model", cex.main=1)
+  curve(a[1]*exp(-b[1]*x) + a[2]*exp(-b[2]*x), from=min(x), 
+        to=max(x), ylim=c(0, 1.05*max(y)), xlim=c(0, max(x)),
+     xlab="x", ylab="y", xaxs="i", yaxs="i", bty="l",
+     main="Data and true model", cex.main=1)
   points(x, y, pch=20, cex=0.2)
-  text(max(x), 0.5*max(y), paste("y = ", fround(a[1], 1), "*exp(", fround(-b[1], 1), "*x) + ", fround(a[2], 1), "*exp(", fround(-b[2], 1), "*x)", sep=""), adj=1)
+  text(max(x), 0.5*max(y), 
+       paste("y = ", fround(a[1], 1), "*exp(", fround(-b[1], 1), "*x) + ", 
+             fround(a[2], 1), "*exp(", fround(-b[2], 1), "*x)", sep=""), 
+       adj=1)
 }
 data_graph(a, b, sigma, x, y)
 ```
@@ -1841,7 +1851,9 @@ text(5.3, 0.8, "y = 1.0*exp(-0.1x) + 0.8*exp(-0.2x)", adj=1)
 text(6.1, 1.2, "y = 1.8*exp(-0.135x)", adj=1)
 ```
 
-The two lines are strikingly close, and it would be essentially impossible to tell them apart based on noisy data, even 1000 measurements.  So Stan had trouble recovering the true parameters from the data.
+The two lines are strikingly close, and it would be essentially impossible to
+tell them apart based on noisy data, even 1000 measurements.  So Stan had
+trouble recovering the true parameters from the data.
 
 Still, if the parameters are difficult to fit, this should just result
 in a high posterior uncertainty.  Why did the Stan fit explode?  The
@@ -1878,7 +1890,8 @@ We now can fit this new model to our data, and the results are much
 more stable:
 
 ```{r, results=FALSE}
-fit_2_with_priors <- stan("stan/sum_of_exponentials_with_priors.stan", data=data_2)
+fit_2_with_priors <- stan("stan/sum_of_exponentials_with_priors.stan", 
+                          data=data_2)
 ```
 ```{r}
 print(fit_2_with_priors)

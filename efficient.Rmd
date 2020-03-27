@@ -69,7 +69,8 @@ in your code will allow you to see more of it at once.
 
 * Vectorization
 
-* Pre-coded functions (logmix, log1plusx, bernoullilogit, logistic regression etc.)
+* Pre-coded functions (logmix, log1plusx, bernoullilogit, logistic regression 
+etc.)
 
 ## What to do when your program is too slow
 
