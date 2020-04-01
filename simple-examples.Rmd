@@ -91,7 +91,7 @@ examples we use in this chapter:
   to fit a mixture model in Stan.
 
 * Declining exponential.  A nonlinear model that comes up in many
-  science and engineering applications, also illsutrating the use of
+  science and engineering applications, also illustrating the use of
   bounds in parameter estimation.
 
 * Sum of declining exponentials.  An important class of nonlinear
@@ -419,7 +419,7 @@ bet, with a higher estimated quality.  But Movie 1 has a small chance
 of being outstanding, along with a moderate chance of being mediocre.
 You can see Movie 1 if you want to roll the dice.
 
-### Estending the model to J movies {-}
+### Extending the model to J movies {-}
 
 It is easy to expand the Stan program to allow an arbitrary number of movies:
 
@@ -865,7 +865,7 @@ The model adjusts for these biases, though, and so the model-based
 estimates, shown in the second plot above, do not have these
 systematic problems.
 
-### Other potential extentions to the model {-}
+### Other potential extensions to the model {-}
 
 Here are some of the many ways in which the model could be generalized
 in order to make it more realistic:
@@ -1090,9 +1090,9 @@ the 95% intervals.
 
 The next step is to figure out what happened.  Our first thought was
 that there was some problem with the $t$ distribution---but replacing
-it by a normal, or keeping the $t$ but estimating the dsgrees of
+it by a normal, or keeping the $t$ but estimating the degrees of
 freedom parameter, did not change anything noticeably.  Our next idea
-was that the discretness of the data could be causing the problem.
+was that the discreteness of the data could be causing the problem.
 But, no, that wasn't it either: the poor coverage of these intervals
 goes well beyond rounding error.
 
@@ -1490,7 +1490,7 @@ quite the 900 that's needed to win! The standard error of the number
 of correct guesses is 10.3, so 900 is over 5 standard errors away from
 our expected number correct. That's bad news!
 
-How bad is it?  We can compute the normal cumulative density fucntion
+How bad is it?  We can compute the normal cumulative density function
 to get the probability of at least 900 successes; that's
 $\mbox{pnorm}(854.1, 900, 10.3)$:
 ```{r}
@@ -1562,7 +1562,7 @@ print_file("stan/exponential.stan")
 ```
 
 We have given the parameters $a$, and $b$, and $\sigma$ normal prior
-distibutions centered at 0 with standard deviation 10.  In addition,
+distributions centered at 0 with standard deviation 10.  In addition,
 the parameter $\sigma$ is constrained to be positive.  The purpose of
 the prior distributions is to keep the computations at a reasonable
 value.  If we were working on a problem in which we thought that $a$,
@@ -1719,16 +1719,16 @@ print(fit_3)
 ## Sum of declining exponentials
 
 From the numerical analysis literature, here is an example of an
-inference problem that appears simple but can be suprisingly
-difficult.  The challenge is to esitmate the parameters of a sum of
+inference problem that appears simple but can be surprisingly
+difficult.  The challenge is to estimate the parameters of a sum of
 declining exponentials: $y = a_1e^{-b_1x} + a_2e^{-b_2x}$.  This is
 also called an inverse problem, and it can be challenging to decompose
 these two declining functions.
 
 This expression, and others like it, arise in many examples, including
 in pharmacology, where $x$ represents time and $y$ could be the
-concentration of a drug in the blood of someoone who was given a
-specfied dose at time 0.  In a simple _two-compartment model_, the
+concentration of a drug in the blood of someone who was given a
+specified dose at time 0.  In a simple _two-compartment model_, the
 total concentration will look like a sum of declining exponentials.
 
 To set this up as a statistics problem, we add some noise to the
@@ -1760,7 +1760,7 @@ in applications.
 We'll try out our Stan model by simulating fake data from a model
 where the two curves should be cleanly distinguished, setting
 $b_1=0.1$ and $b_2=2.0$, a factor of 20 apart in scale.  We'll
-simulate 1000 data points where the predictors $x$ are uniformlly
+simulate 1000 data points where the predictors $x$ are uniformly
 spaced from 0 to 10, and, somewhat arbitrarily, set $a_1=1.0$,
 $a_2=0.8$, and $\sigma=0.2$.  We can then simulate from the lognormal
 distribution to generate the data $y$.
@@ -1857,7 +1857,7 @@ trouble recovering the true parameters from the data.
 
 Still, if the parameters are difficult to fit, this should just result
 in a high posterior uncertainty.  Why did the Stan fit explode?  The
-problme in this case is that, since only one term in the model was
+problem in this case is that, since only one term in the model was
 required to fit these data, the second term was completely free---and
 the parameter $\beta_2$ was unbounded: there was nothing stopping it
 from being estimated as arbitrarily large.  This sort of unbounded
@@ -1865,7 +1865,7 @@ posterior distribution is called _improper_ (see Bayesian Data
 Analysis for a more formal definition), and there is no way of drawing
 simulations from such a distribution, hence Stan does not
 converge. The simulations drift off to infinity, as there is nothing
-in the prior or likeliood that is keeping them from doing so.
+in the prior or likelihood that is keeping them from doing so.
 
 To fix the problem, we can add some prior information.  Here we shall
 use our default, which is independent $\mbox{norma}(0,1)$ prior
@@ -1880,7 +1880,7 @@ block in the Stan program:
 
 For this particular example, all we really need is a prior on $b$
 (really, just $b_2$ because of the ordering), but to demonstrate the
-point we shall assign default priors to everyhing.  The priors are in
+point we shall assign default priors to everything.  The priors are in
 addition to the rest of the model; that is, they go on top of the
 positivity and ordering constraints.  So, for example, the prior for
 $\sigma$ is the positive half of a normal, which is sometimes written
@@ -1912,11 +1912,11 @@ parameters are on "unit scale," meaning that we expect them to be of
 order of magnitude around 1.  Not all statistical models are on unit
 scale.  For example, in the above model, if the data $y_i$ are on unit
 scale, but the data values $x_i$ take on values in the millions, then
-we'd probably expect the parameters $b_1$ and $b_2$ to be roungly on
+we'd probably expect the parameters $b_1$ and $b_2$ to be roughly on
 the scale of $10^{-6}$.  In such a case, we'd want to rescale $x$ so
 that the coefficients $b$ are more interpretable.  Similarly, if the
-values of $y$ ranged in the millions, then the coefficents $a$ would
-have to be of order $10^6$, and, again, we would want ot reascale the
+values of $y$ ranged in the millions, then the coefficients $a$ would
+have to be of order $10^6$, and, again, we would want to rescale the
 data or the model so that $a$ would be on unit scale.  By using unit
 scale priors, we are implicitly assuming the model has been scaled.
 
@@ -1929,7 +1929,7 @@ distribution and graphing the corresponding curves of expected data,
 and seeing if these could plausibly cover the possible cases that
 might arise in the particular problem being studied.
 
-No matter how it's done, infernece has to come from somewhere, and if
+No matter how it's done, inference has to come from somewhere, and if
 the data are weak, you need to put in prior information if your goal
 is to make some statement about possible parameter values, and from
 there to make probabilistic predictions and decisions.
