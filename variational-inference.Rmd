@@ -31,8 +31,8 @@ $$
   \mbox{KL}{q(\theta \, | \, \phi) }{ p(\theta \mid y)}.
 $$
 
-Typically the KL divergence lacks an analytic, closed-form solution.
-Instead we maximize a proxy to the KL divergence, the so-called "evidence lower bound"
+Typically the KL divergence lacks an analytic, closed-form solution. Instead we
+maximize a proxy to the KL divergence, the so-called "evidence lower bound"
 (ELBO)
 
 $$

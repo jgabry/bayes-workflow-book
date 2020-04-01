@@ -23,8 +23,11 @@ that maximizes the likelihood, i.e.,
 $$
 \hat{\theta} = \mbox{argmax}_{\theta} \ p(y|\theta).
 $$
-It is usually more convenient to work on the log scale.
-The following is an equivalent formulateion of the MLE,^[The equivalence follows from the fact that densities are positive and the log function is strictly monotonic, i.e., $p(y|\theta) \geq 0$ and for all $a, b > 0$, $\log a > \log b$ if and only if $a > b$.]
+It is usually more convenient to work on the log scale. The following is an
+equivalent formulateion of the MLE,^[The equivalence follows from the fact that
+densities are positive and the log function is strictly monotonic, i.e.,
+$p(y|\theta) \geq 0$ and for all $a, b > 0$, $\log a > \log b$ if and only if $a
+> b$.]
 
 $$
 \hat{\theta} = \mbox{argmax}_{\theta} \ \log p(y|\theta).
@@ -66,7 +69,8 @@ $$
 (\hat{\beta},\hat{\sigma})
 \ = \
 \mbox{argmax}_{\beta,\sigma}
-\log p(y|\beta,\sigma,x) = \sum_{n=1}^N \log \mathsf{normal}(y_n|x_n \beta, \sigma).
+\log p(y|\beta,\sigma,x) = 
+\sum_{n=1}^N \log \mathsf{normal}(y_n|x_n \beta, \sigma).
 $$
 
 #### Squared Error {-}
@@ -196,7 +200,8 @@ of least squares,
 $$
 \hat{\beta}
 \ = \
-\mbox{argmin}_{\beta} \, \sum_{n=1}^N (y_n - x_n \beta)^2 + \sum_{k=1}^K \beta_k^2
+\mbox{argmin}_{\beta} \, 
+\sum_{n=1}^N (y_n - x_n \beta)^2 + \sum_{k=1}^K \beta_k^2
 \ = \
 \mbox{argmin}_{\beta} \, (y - x\beta)^{\top} (y - x\beta) +
 \lambda \beta^{\top} \beta.
@@ -243,9 +248,11 @@ $$
 \frac{d}{d\beta_k} \lambda \sum_{k=1}^K | \beta_k | =
 \mbox{signum}(\beta_k),
 $$
-it has the effect of shrinking parameters all the way to 0 in maximum
-likelihood estimates.  Thus it can be used for variable selection as
-well as just shrinkage.^[In practice, Stan's gradient-based optimizers are not guaranteed to produce exact zero values; see @LangfordEtAl:2009 for a discussion of getting exactly zero values with gradient descent.]
+it has the effect of shrinking parameters all the way to 0 in maximum likelihood
+estimates.  Thus it can be used for variable selection as well as just
+shrinkage.^[In practice, Stan's gradient-based optimizers are not guaranteed to
+produce exact zero values; see @LangfordEtAl:2009 for a discussion of getting
+exactly zero values with gradient descent.]
 
 Lasso can be implemented in Stan just as easily as ridge
 regression, with the magnitude declared as data and the penalty added
