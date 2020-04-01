@@ -2,10 +2,11 @@
 
 ## Books {-}
 
-We recommend working through this book using the textbooks Bayesian
-Data Analysis, third edition (BDA3) and Statistical Rethinking: A Bayesian Course with
-Examples in R and Stan as references on the concepts, and using the
-Stan User's Guide and Reference Manual when necessary to clarify programming issues.  We discuss BDA in detail in a later chapter of this book.
+We recommend working through this book using the textbooks Bayesian Data
+Analysis, third edition (BDA3) and Statistical Rethinking: A Bayesian Course
+with Examples in R and Stan as references on the concepts, and using the Stan
+User's Guide and Reference Manual when necessary to clarify programming issues.
+We discuss BDA in detail in a later chapter of this book.
 
 ## Stan manuals and guides {-}
 
@@ -13,9 +14,12 @@ The Stan documentation is at https://mc-stan.org/users/documentation/.
 
 * Stan User's Guide
 
-The Stan user’s guide provides example models and programming techniques for coding statistical models in Stan. It also serves as an example-driven introduction to Bayesian modeling and inference.
+The Stan user’s guide provides example models and programming techniques for
+coding statistical models in Stan. It also serves as an example-driven
+introduction to Bayesian modeling and inference.
 
-Currently the User's Guide has Stan programs and code fragments, but no examples that can be directly run from R or Python or the command line.
+Currently the User's Guide has Stan programs and code fragments, but no examples
+that can be directly run from R or Python or the command line.
 
 
 * Stan Language Reference Manual
@@ -64,7 +68,10 @@ code review for pull requests.
 
 ## Example models {-}
 
-The Stan case studies (https://mc-stan.org/users/documentation/case-studies) are discussed in a later chaper of this book.  In addiiton, a large set of models translated from BUGS, applied regression modeling examples, and examples from other books here: https://github.com/stan-dev/example-models/wiki.
+The Stan case studies (https://mc-stan.org/users/documentation/case-studies) are
+discussed in a later chaper of this book.  In addiiton, a large set of models
+translated from BUGS, applied regression modeling examples, and examples from
+other books here: https://github.com/stan-dev/example-models/wiki.
 
 ## Acknowledgements {-}
 

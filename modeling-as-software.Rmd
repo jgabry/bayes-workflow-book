@@ -15,7 +15,8 @@ advice.
 
 ## Use Version Control
 
-Version control software, such as Git, should be in place before starting to code.
+Version control software, such as Git, should be in place before starting to 
+code.
 
 It may seem like a big investment to learn version control, but it's
 well worth it to be able to type a single command to revert to a
@@ -27,15 +28,17 @@ independently and then automatically merged.
 
 ## Make it Reproducible
 
-Rather than entering commands on the command-line when running models
-(or entering commands directly into an interactive programming
-language like R or Python), try writing scripts to run the data
-through the models and produce whatever posterior analysis you need.
-Scripts can be written for the shell, R, or Python.  Whatever language
-a script is in, it should be self contained and not depend on global
-variables having been set, other data being read in, etc.  Most
-projects do not have long-term reproducibility needs, so be careful to
-choose the right tooling for the job at hand.^[To guarantee bit-level reproducibility, and often even just to get a program to run, everything from hardware to the operating system to every piece of software and setting must be reproduced.]
+Rather than entering commands on the command-line when running models (or
+entering commands directly into an interactive programming language like R or
+Python), try writing scripts to run the data through the models and produce
+whatever posterior analysis you need. Scripts can be written for the shell, R,
+or Python.  Whatever language a script is in, it should be self contained and
+not depend on global variables having been set, other data being read in, etc.
+Most projects do not have long-term reproducibility needs, so be careful to
+choose the right tooling for the job at hand.^[To guarantee bit-level
+reproducibility, and often even just to get a program to run, everything from
+hardware to the operating system to every piece of software and setting must be
+reproduced.]
 
 
 ### Scripts are Good Documentation {-}
@@ -52,14 +55,15 @@ randomized.  Stan's samplers involve random initializations as well as
 randomization during each iteration (e.g., Hamiltonian Monte Carlo
 generates a random momentum in each iteration).
 
-Computers are deterministic.  There is no real randomness, just
-pseudo-random number generators.  These operate by generating a
-sequence of random numbers based on a "seed."  Stan (and other
-languages like R) can use time-based methods to generate a seed based
-on the time and date, or seeds can be provided to Stan (or R) in the
-form of integers.  Stan writes out the seed used to generate the
-data as well as the version number of the Stan software so that
-results can be reproduced at a later date.^[This also requires fixing compilers and hardware, because floating-point arithmetic does not have an absolutely fixed behavior across operating systems, hardware configurations, or compilers.]
+Computers are deterministic.  There is no real randomness, just pseudo-random
+number generators.  These operate by generating a sequence of random numbers
+based on a "seed."  Stan (and other languages like R) can use time-based methods
+to generate a seed based on the time and date, or seeds can be provided to Stan
+(or R) in the form of integers.  Stan writes out the seed used to generate the
+data as well as the version number of the Stan software so that results can be
+reproduced at a later date.^[This also requires fixing compilers and hardware,
+because floating-point arithmetic does not have an absolutely fixed behavior
+across operating systems, hardware configurations, or compilers.]
 
 
 
@@ -78,13 +82,14 @@ and layout.  Not only of programs themselves, but the directories and
 files in which they're stored.  Readability of code is not just about
 comments---it is also about naming and organization for readability.
 
-It is surprising how often the solution to a debugging or design
-problem occurs when trying to explain enough about the problem to
-someone else to get help.  This can be on a mailing list, but it works
-best person-to-person.  Finding the solution to your own problem when
-explaining it to someone else happens so frequently in software
-development that the listener is called a "rubber ducky," because
-they only have to nod along.^[Research has shown an actual rubber ducky won't work.  For some reason, the rubber ducky must actually be capable of understanding the explanation.]
+It is surprising how often the solution to a debugging or design problem occurs
+when trying to explain enough about the problem to someone else to get help.
+This can be on a mailing list, but it works best person-to-person.  Finding the
+solution to your own problem when explaining it to someone else happens so
+frequently in software development that the listener is called a "rubber ducky,"
+because they only have to nod along.^[Research has shown an actual rubber ducky
+won't work.  For some reason, the rubber ducky must actually be capable of
+understanding the explanation.]
 
 
 ## Explore the Data
@@ -133,9 +138,10 @@ tests.
 
 ## Debug by Print
 
-Although Stan does not have a stepwise debugger or any unit testing
-framework in place, it does support the time-honored tradition of
-debug-by-printf.^[The "f" is not a typo --- it's a historical artifact of the name of the `printf` function used for formatted printing in C.]
+Although Stan does not have a stepwise debugger or any unit testing framework in
+place, it does support the time-honored tradition of debug-by-printf.^[The "f"
+is not a typo --- it's a historical artifact of the name of the `printf`
+function used for formatted printing in C.]
 
 Stan supports print statements with one or more string or expression
 arguments.  Because Stan is an imperative language, variables can have
@@ -272,7 +278,9 @@ worse than no comment at all!
 
 ## Stan coding and Bayesian workflow
 
-Some guidance on (a) how to construct a Bayesian model, and (b) how to do this construction in Stan.  Ideally the reader would learn to write a Stan model directly, rather than first writing it in math and then translating to Stan.
+Some guidance on (a) how to construct a Bayesian model, and (b) how to do this
+construction in Stan.  Ideally the reader would learn to write a Stan model
+directly, rather than first writing it in math and then translating to Stan.
 
 Start small, build up, relation to workflow
 
