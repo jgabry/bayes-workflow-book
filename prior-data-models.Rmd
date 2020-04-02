@@ -639,7 +639,7 @@ parameters {
   real theta;
 }
 model {
-  theta ~ cauchy (0, 1);
+  theta ~ cauchy(0, 1);
   y ~ normal(theta, 1);
 }
 ```
@@ -660,7 +660,7 @@ parameters {
   real theta;
 }
 model {
-  y ~ normal (theta, 1);
+  y ~ normal(theta, 1);
 }
 ```
 and re-run with the same R code. This time, indeed, 84% of the posterior
