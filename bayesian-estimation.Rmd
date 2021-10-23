@@ -94,7 +94,7 @@ exist is with a posterior with a Cauchy distribution
 $\mathsf{Cauchy}(\mu,\tau)$.  The posterior mode is $\mu$, but the
 integral expressing the posterior mean diverges.  Such diffuse priors
 rarely arise in practical modeling applications; even with a Cauchy
-Cauchy prior for some parameters, data will provide enough constraints
+prior for some parameters, data will provide enough constraints
 that the posterior is better behaved and means exist.
 
 Sometimes when posterior means exist, they are not meaningful, as in
