@@ -62,7 +62,7 @@ The necessary sections in chapters 2 and 3 for you to read:
 don't really need to know this stuff, but it's good to know where the derivation
 is, so you can see how such analyses are performed.
 
-* Partial pooling for estimating the rats of a rare cancer:  section 2.7.  This
+* Partial pooling for estimating the rates of a rare cancer:  section 2.7.  This
 is one of our favorite examples.  The only thing is, don't obsess about how the
 posterior distribution is estimated from the data.  When this section was
 written, it simplest to fit this distribution using the method of moments,
@@ -507,7 +507,7 @@ model.
 ## BDA3 appendix A:  Standard probability distributions {-}
 
 This appendix is a useful compendium of information on probability
-distributions, better than wikipedia because it uses consistent notation.
+distributions, better than Wikipedia because it uses consistent notation.
 
 ## BDA3 appendix B:  Outline of proofs of limit theorems {-}
 
@@ -517,7 +517,7 @@ inference.
 ## BDA3 appendix C:  Computation in R and Stan {-}
 
 Much of this appendix involves programming directly in R the computations that
-are done automatically in Stan. But we recommend that you through these
+are done automatically in Stan. But we recommend that you go through these
 computations as a way of understanding basic implementations of the Gibbs
 sampler, Metropolis algorithm, and Hamiltonian Monte Carlo.
 
